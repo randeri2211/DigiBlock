@@ -1,0 +1,37 @@
+Mods: {
+	DigiBlock: {
+		Items: {
+			SteelShard: {
+				DisplayName: Steel Shard
+				Tooltip: ""
+			}
+
+			ExampleMagicWeapon: {
+				DisplayName: Example Magic Weapon
+				Tooltip: ""
+			}
+
+			SteelSword: {
+				DisplayName: Steel Sword
+				Tooltip: ""
+			}
+		}
+
+		NPCs: {
+			Digimon: {
+				DisplayName: Digimon
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+		}
+	}
+}

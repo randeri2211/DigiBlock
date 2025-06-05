@@ -1,0 +1,16 @@
+Items: {
+	SteelShard: {
+		DisplayName: Steel Shard
+		Tooltip: ""
+	}
+
+	SteelSword: {
+		DisplayName: Steel Sword
+		Tooltip: ""
+	}
+
+	ExampleMagicWeapon: {
+		DisplayName: Example Magic Weapon
+		Tooltip: ""
+	}
+}
