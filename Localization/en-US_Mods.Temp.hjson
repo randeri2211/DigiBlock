@@ -13,4 +13,9 @@ Items: {
 		DisplayName: Example Magic Weapon
 		Tooltip: ""
 	}
+
+	Digivice: {
+		DisplayName: Digivice name
+		Tooltip: Digivice tooltip
+	}
 }

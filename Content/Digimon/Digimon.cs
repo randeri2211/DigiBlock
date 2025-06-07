@@ -13,6 +13,10 @@ namespace DigiBlock.Content.Digimon
 {
     public class Digimon : ModNPC
     {
+        bool tamed = false;
+        Entity wildTarget = null;
+
+
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 25; // The total amount of frames the NPC has
@@ -39,17 +43,172 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
-            NPC.townNPC = true; // Sets NPC to be a Town NPC
-			NPC.friendly = true; // NPC Will not attack player
-			NPC.width = 18;
-			NPC.height = 40;
-			NPC.aiStyle = 7;
-			// NPC.damage = 10;
-			// NPC.defense = 15;
-			NPC.lifeMax = 250;
-			// NPC.knockBackResist = 0.5f;
+            NPC.friendly = tamed; // NPC Will not attack player
+            NPC.width = 18;
+            NPC.height = 40;
+            // NPC.damage = 10;
+            // NPC.defense = 15;
+            NPC.lifeMax = 250;
+            // NPC.knockBackResist = 0.5f;
 
-			AnimationType = NPCID.Guide;
+            AnimationType = NPCID.Guide;
+        }
+
+        public override bool PreAI()
+        {
+            return true;
+        }
+
+        public override void AI()
+        {
+            // Targeting
+            if (tamed)
+            {
+                TargetHostileNPC();
+                if (NPC.HasValidTarget)
+                {
+                    Console.WriteLine("Targeting: " + Main.npc[NPC.target].FullName);
+
+                    TamedAI();
+                }
+                
+                
+            }
+            else
+            {
+                if (wildTarget == null)
+                {
+                    TargetFriendlyDigimonPlayer();
+                    Console.WriteLine("Targeting: " + wildTarget.ToString() +" in target"); 
+                }
+
+            
+                Player player = Main.player[NPC.target];
+
+                if (!wildTarget.active)
+                {
+                    NPC.EncourageDespawn(10);
+                    return;
+                }
+
+                WildAI();
+                                
+            }
+
+        }
+
+        private void TargetHostileNPC()
+        {
+            int closestEnemy = -1;
+            float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
+
+            for (int i = 0; i < Main.npc.Length; i++)
+            {
+                NPC target = Main.npc[i];
+
+                if (target.active && !target.friendly && !target.townNPC && target.CanBeChasedBy(this))
+                {
+                    float distance = Vector2.Distance(NPC.Center, target.Center);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestEnemy = i;
+                    }
+                }
+            }
+
+            if (closestEnemy != -1)
+            {
+                NPC.target = closestEnemy; // Ensure the NPC isn't auto-targeting players
+                NPC.direction = (Main.npc[closestEnemy].Center.X > NPC.Center.X) ? 1 : -1;
+            }
+            else
+            {
+                NPC.target = 255;
+                NPC.velocity *= 0.95f; // idle
+            }
+        }
+
+        private void TargetFriendlyDigimonPlayer()
+        {
+            float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
+
+            // Check all players
+            for (int i = 0; i < Main.player.Length; i++)
+            {
+                Player player = Main.player[i];
+
+                if (player.active && !player.dead)
+                {
+                    float distance = Vector2.Distance(NPC.Center, player.Center);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        wildTarget = player;
+                    }
+                }
+            }
+
+            // Check all NPCs (to find tamed Digimon)
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC potential = Main.npc[i];
+
+                if (potential.active && potential.ModNPC is Digimon digimon && digimon.tamed)
+                {
+                    float distance = Vector2.Distance(NPC.Center, potential.Center);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        wildTarget = potential;
+                    }
+                }
+            }
+            
+        }
+    
+        /// <summary>
+        /// Can hit the player only if its a wild digimon
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="cooldownSlot"></param>
+        /// <returns></returns>
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return !tamed;
+        }
+
+        /// <summary>
+        /// Can hit other npcs only if they are not friendly
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public override bool CanHitNPC(NPC target)
+        {
+            if (tamed)
+            {
+                return !target.friendly;
+            }
+            else
+            {
+                return target.friendly;
+            }
+        }
+
+        /// <summary>
+        /// Used to decide how to move the digimon/how to attack the target when the digimon is tamed
+        /// </summary>
+        public void TamedAI()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void WildAI()
+        {
+
         }
 
     }

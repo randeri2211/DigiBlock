@@ -15,6 +15,11 @@ Mods: {
 				DisplayName: Steel Sword
 				Tooltip: ""
 			}
+
+			Digivice: {
+				DisplayName: Digivice
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {
