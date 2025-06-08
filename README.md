@@ -11,14 +11,12 @@
 - [ ] Digimon can devolve into all the forms that can evolve into it
 - [ ] Make an evolution graph to travel for evolutions maybe?(hold adjecency matrix to see both sides of evolution and devolution seperately and easily?)
 - [ ] Digimon killing digimon gives exp to the digimon
-- [ ] 
 
 ## Accessories
 - [ ] Increase digimon max HP
 - [ ] Increase digimon max Mana
 - [ ] Increase <span style="color:red">Digital</span> damage
 - [ ] Increase digimon exp gain
-- [ ] 
 
 ## Items
 - [ ] Digivices

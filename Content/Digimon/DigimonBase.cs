@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using DigiBlock.Common;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -21,6 +22,9 @@ namespace DigiBlock.Content.Digimon
         public int level = 16;
         public Evolutions evoStage;
         public bool justEvolved = false;
+        private int currentEXP = 0;
+        private int maxEXP = DigiblockConstants.StartingEXP;
+
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 25; // The total amount of frames the NPC has
@@ -169,22 +173,30 @@ namespace DigiBlock.Content.Digimon
 
         }
 
-        /// <summary>
-        /// Can hit the player only if its a wild digimon
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="cooldownSlot"></param>
-        /// <returns></returns>
+        public void GiveEXP(int exp)
+        {
+            if (exp > 0)
+            {
+                currentEXP += exp;
+            }
+        }
+
+        public void CheckLevelUp()
+        {
+            if (currentEXP >= maxEXP)
+            {
+                currentEXP -= maxEXP;
+                level += 1;
+                maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
+                CheckLevelUp();
+            }
+        }
+
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
             return !tamed;
         }
 
-        /// <summary>
-        /// Can hit other npcs only if they are not friendly
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
         public override bool CanHitNPC(NPC target)
         {
             if (tamed)
@@ -197,17 +209,11 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        /// <summary>
-        /// Used to decide how to move the digimon/how to attack the target when the digimon is tamed
-        /// </summary>
         public void TamedAI()
         {
 
         }
 
-        /// <summary>
-        /// Used to decide how to move the digimon/how to attack the target when the digimon is wild 
-        /// </summary>
         public void WildAI()
         {
 
