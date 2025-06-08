@@ -1,22 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoMod.Cil;
 using System;
 using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Utilities;
 
 namespace DigiBlock.Content.Digimon
 {
-    public class Digimon : ModNPC
+    public enum Evolutions
     {
-        bool tamed = false;
-        Entity wildTarget = null;
-
-
+        InTraining,
+        Rookie,
+        Champion,
+        Ultimate,
+        Mega
+    }
+    public class DigimonBase : ModNPC
+    {
+        public bool tamed = true;
+        public Entity wildTarget = null;
+        public int level = 16;
+        public Evolutions evoStage;
+        public bool justEvolved = false;
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[Type] = 25; // The total amount of frames the NPC has
@@ -24,10 +28,8 @@ namespace DigiBlock.Content.Digimon
             NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs. This is the remaining frames after the walking frames.
             NPCID.Sets.AttackFrameCount[Type] = 4; // The amount of frames in the attacking animation.
             NPCID.Sets.DangerDetectRange[Type] = 700; // The amount of pixels away from the center of the NPC that it tries to attack enemies.
-            NPCID.Sets.AttackType[Type] = 0; // The type of attack the Town NPC performs. 0 = throwing, 1 = shooting, 2 = magic, 3 = melee
+            NPCID.Sets.AttackType[Type] = 3; // The type of attack the Town NPC performs. 0 = throwing, 1 = shooting, 2 = magic, 3 = melee
             NPCID.Sets.AttackTime[Type] = 90; // The amount of time it takes for the NPC's attack animation to be over once it starts.
-            NPCID.Sets.AttackAverageChance[Type] = 30; // The denominator for the chance for a Town NPC to attack. Lower numbers make the Town NPC appear more aggressive.
-            NPCID.Sets.HatOffsetY[Type] = 4; // For when a party is active, the party hat spawns at a Y offset.
 
             // Influences how the NPC looks in the Bestiary
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -67,22 +69,22 @@ namespace DigiBlock.Content.Digimon
                 TargetHostileNPC();
                 if (NPC.HasValidTarget)
                 {
-                    Console.WriteLine("Targeting: " + Main.npc[NPC.target].FullName);
+                    // Console.WriteLine("Targeting: " + Main.npc[NPC.target].FullName);
 
                     TamedAI();
                 }
-                
-                
+
+
             }
             else
             {
                 if (wildTarget == null)
                 {
                     TargetFriendlyDigimonPlayer();
-                    Console.WriteLine("Targeting: " + wildTarget.ToString() +" in target"); 
+                    // Console.WriteLine("Targeting: " + wildTarget.ToString() + " in target");
                 }
 
-            
+
                 Player player = Main.player[NPC.target];
 
                 if (!wildTarget.active)
@@ -92,7 +94,7 @@ namespace DigiBlock.Content.Digimon
                 }
 
                 WildAI();
-                                
+
             }
 
         }
@@ -150,11 +152,11 @@ namespace DigiBlock.Content.Digimon
             }
 
             // Check all NPCs (to find tamed Digimon)
-            for (int i = 0; i < Main.maxNPCs; i++)
+            for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC potential = Main.npc[i];
 
-                if (potential.active && potential.ModNPC is Digimon digimon && digimon.tamed)
+                if (potential.active && potential.ModNPC is DigimonBase digimon && digimon.tamed)
                 {
                     float distance = Vector2.Distance(NPC.Center, potential.Center);
                     if (distance < closestDistance)
@@ -164,9 +166,9 @@ namespace DigiBlock.Content.Digimon
                     }
                 }
             }
-            
+
         }
-    
+
         /// <summary>
         /// Can hit the player only if its a wild digimon
         /// </summary>
@@ -204,7 +206,7 @@ namespace DigiBlock.Content.Digimon
         }
 
         /// <summary>
-        /// 
+        /// Used to decide how to move the digimon/how to attack the target when the digimon is wild 
         /// </summary>
         public void WildAI()
         {

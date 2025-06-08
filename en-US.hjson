@@ -37,6 +37,10 @@ Mods: {
 					Princess_LovesNPC: I like {NPCName}.
 				}
 			}
+
+			Agumon.DisplayName: Agumon
+			DigimonBase.DisplayName: Digimon Base
+			Greymon.DisplayName: Greymon
 		}
 	}
 }

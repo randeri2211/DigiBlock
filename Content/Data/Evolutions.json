@@ -1,0 +1,10 @@
+{
+    "Agumon":[
+        {
+            "Evolution": "Greymon",
+            "Conditions": {
+                "Level": 16
+            }
+        }
+    ]
+}
