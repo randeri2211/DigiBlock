@@ -46,6 +46,7 @@ Mods: {
 			Agumon.DisplayName: Agumon
 			DigimonBase.DisplayName: Digimon Base
 			Greymon.DisplayName: Greymon
+			Koromon.DisplayName: Koromon
 		}
 
 		DamageClasses.DigitalDamage.DisplayName: Digital Damage

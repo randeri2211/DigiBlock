@@ -93,20 +93,22 @@ namespace DigiBlock.Content.Systems
             NPC npc = digimon.NPC;
             if (mod.Find<ModNPC>(evolutionName) is DigimonBase evolved)
             {
-                int type = evolved.Type;
+                int etype = evolved.Type;
                 Vector2 pos = npc.Center;
-                int newNpcId = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, type);
+                int newNpcId = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, etype);
                 if (Main.npc[newNpcId].ModNPC is DigimonBase evolvedNPC && evolvedNPC.NPC.active)
                 {
                     mod.Logger.Debug("Damage before " + digimon.NPC.damage);
+                    mod.Logger.Debug("dd " + digimon.card.digimon.name);
                     digimon.card.digimon = evolvedNPC;
+                    digimon.card.setDigimonNpcType(etype, false);
                     evolvedNPC.copyData(digimon);
                     evolvedNPC.NPC.lifeMax += DigiblockConstants.EvolutionBonus;
                     evolvedNPC.NPC.damage += DigiblockConstants.EvolutionBonus;
                     evolvedNPC.baseDmg += DigiblockConstants.EvolutionBonus;
                     mod.Logger.Debug("Damage after " + evolvedNPC.NPC.damage);
                     mod.Logger.Debug("Damage after " + evolvedNPC.baseDmg);
-
+                    mod.Logger.Debug("ff " + digimon.card.digimon.name);
                 }
             }
             digimon.justEvolved = true;

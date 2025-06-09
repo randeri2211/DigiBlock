@@ -65,6 +65,7 @@ namespace DigiBlock.Content.Digimon
         public void copyData(DigimonBase digimon)
         {
             // tamed = digimon.tamed;
+            card = digimon.card;
             NPC.friendly = digimon.NPC.friendly;
             level = digimon.level;
             NPC.lifeMax = digimon.NPC.lifeMax;
