@@ -20,6 +20,11 @@ Mods: {
 				DisplayName: Digivice
 				Tooltip: ""
 			}
+
+			DigimonCard: {
+				DisplayName: Digimon Card
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {
@@ -42,5 +47,7 @@ Mods: {
 			DigimonBase.DisplayName: Digimon Base
 			Greymon.DisplayName: Greymon
 		}
+
+		DamageClasses.DigitalDamage.DisplayName: Digital Damage
 	}
 }

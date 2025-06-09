@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using DigiBlock.Common;
+using DigiBlock.Content.Items.Digimon;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -17,16 +18,21 @@ namespace DigiBlock.Content.Digimon
     }
     public class DigimonBase : ModNPC
     {
-        public bool tamed = true;
+        public string name;
+        public DigimonCard card;
+        public bool justEvolved = false;
+        // public bool tamed = false;
+        public bool summoned = false;
         public Entity wildTarget = null;
         public int level = 16;
         public Evolutions evoStage;
-        public bool justEvolved = false;
         private int currentEXP = 0;
         private int maxEXP = DigiblockConstants.StartingEXP;
+        public int baseDmg;
 
         public override void SetStaticDefaults()
         {
+
             Main.npcFrameCount[Type] = 25; // The total amount of frames the NPC has
 
             NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs. This is the remaining frames after the walking frames.
@@ -47,17 +53,25 @@ namespace DigiBlock.Content.Digimon
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
 
+     
         public override void SetDefaults()
         {
-            NPC.friendly = tamed; // NPC Will not attack player
-            NPC.width = 18;
-            NPC.height = 40;
-            // NPC.damage = 10;
-            // NPC.defense = 15;
-            NPC.lifeMax = 250;
-            // NPC.knockBackResist = 0.5f;
+            name = Name;
+            NPC.damage = baseDmg;
 
-            AnimationType = NPCID.Guide;
+            NPC.friendly = false; // Wild digimon by default
+        }
+
+        public void copyData(DigimonBase digimon)
+        {
+            // tamed = digimon.tamed;
+            NPC.friendly = digimon.NPC.friendly;
+            level = digimon.level;
+            NPC.lifeMax = digimon.NPC.lifeMax;
+            NPC.life = digimon.NPC.life;
+            NPC.damage = digimon.NPC.damage;
+            baseDmg = digimon.baseDmg;
+            NPC.active = digimon.NPC.active;
         }
 
         public override bool PreAI()
@@ -68,12 +82,16 @@ namespace DigiBlock.Content.Digimon
         public override void AI()
         {
             // Targeting
-            if (tamed)
+            if (NPC.friendly)
             {
-                TargetHostileNPC();
-                if (NPC.HasValidTarget)
+                if (wildTarget == null)
                 {
-                    // Console.WriteLine("Targeting: " + Main.npc[NPC.target].FullName);
+                    TargetHostileNPC();
+                }
+                
+                if (wildTarget != null)
+                {
+                    Console.WriteLine("Friendly Targeting: " + Main.npc[NPC.target].FullName);
 
                     TamedAI();
                 }
@@ -85,7 +103,7 @@ namespace DigiBlock.Content.Digimon
                 if (wildTarget == null)
                 {
                     TargetFriendlyDigimonPlayer();
-                    // Console.WriteLine("Targeting: " + wildTarget.ToString() + " in target");
+                    // Console.WriteLine("Hostile Targeting: " + wildTarget.ToString() + " in target");
                 }
 
 
@@ -100,7 +118,8 @@ namespace DigiBlock.Content.Digimon
                 WildAI();
 
             }
-
+            
+            base.AI();
         }
 
         private void TargetHostileNPC()
@@ -117,16 +136,26 @@ namespace DigiBlock.Content.Digimon
                     float distance = Vector2.Distance(NPC.Center, target.Center);
                     if (distance < closestDistance)
                     {
+                        Console.WriteLine($"{target.FullName} {distance} {closestDistance}");
                         closestDistance = distance;
                         closestEnemy = i;
                     }
                 }
             }
-
+            Console.WriteLine($"outside {closestEnemy} {closestDistance}");
             if (closestEnemy != -1)
             {
+                wildTarget = Main.npc[closestEnemy];
                 NPC.target = closestEnemy; // Ensure the NPC isn't auto-targeting players
-                NPC.direction = (Main.npc[closestEnemy].Center.X > NPC.Center.X) ? 1 : -1;
+                if (Main.npc[closestEnemy].Center.X > NPC.Center.X)
+                {
+                    NPC.direction = 1;
+                }
+                else
+                {
+                    NPC.direction = -1;
+                }
+                NPC.spriteDirection = NPC.direction;
             }
             else
             {
@@ -160,7 +189,7 @@ namespace DigiBlock.Content.Digimon
             {
                 NPC potential = Main.npc[i];
 
-                if (potential.active && potential.ModNPC is DigimonBase digimon && digimon.tamed)
+                if (potential.active && potential.ModNPC is DigimonBase digimon && digimon.NPC.friendly)
                 {
                     float distance = Vector2.Distance(NPC.Center, potential.Center);
                     if (distance < closestDistance)
@@ -194,24 +223,54 @@ namespace DigiBlock.Content.Digimon
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            return !tamed;
+            return !NPC.friendly;
         }
 
         public override bool CanHitNPC(NPC target)
         {
-            if (tamed)
-            {
-                return !target.friendly;
-            }
-            else
-            {
-                return target.friendly;
-            }
+            return !NPC.friendly;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit)
+        {
+            base.OnHitNPC(target, hit);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+        {
+            base.OnHitPlayer(target, hurtInfo);
         }
 
         public void TamedAI()
         {
+            foreach (NPC target in Main.npc)
+            {
+                if (target.active && !target.friendly && !target.townNPC && target.CanBeChasedBy(NPC))
+                {
+                    // Simple bounding box check for contact
+                    if (NPC.Hitbox.Intersects(target.Hitbox))
+                    {
+                        // Optional: cooldown check
+                        if (target.immune[NPC.whoAmI] <= 0)
+                        {
+                            int damage = baseDmg;
 
+                            // Apply contact damage manually
+                            NPC.HitInfo hitInfo = new()
+                            {
+                                Damage = damage,
+                                Knockback = 1f,
+                                HitDirection = NPC.direction
+                            };
+
+                            target.StrikeNPC(hitInfo);
+
+                            // Add immunity time to prevent rapid hits
+                            target.immune[NPC.whoAmI] = 30; // 30 ticks = 0.5s
+                        }
+                    }
+                }
+            }
         }
 
         public void WildAI()

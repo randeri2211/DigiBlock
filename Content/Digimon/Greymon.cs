@@ -17,9 +17,11 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
-            base.SetDefaults();
             NPC.width = 32;
             NPC.height = 32;
+            baseDmg = 20;
+            NPC.lifeMax = 15;
+            base.SetDefaults();
         }
     }
 }

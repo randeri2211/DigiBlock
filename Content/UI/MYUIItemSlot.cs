@@ -6,19 +6,24 @@ using Terraria.GameContent;
 using DigiBlock.Content.Items;
 using System;
 using Terraria.GameContent.UI.Elements;
-using System.Collections.Generic;
+using DigiBlock.Content.Items.Digimon;
+using Terraria.ID;
+using DigiBlock.Content.Digimon;
+using DigiBlock.Common;
 
 namespace DigiBlock.Content.UI
 {
     public class MYUIItemSlot : UIElement
     {
         public Digivice digivice;
+        private Item previousItem = new Item(); // starts as "air"
 
         public MYUIItemSlot(Digivice digivice)
         {
             this.digivice = digivice;
             Width.Set(50f, 0f);
             Height.Set(50f, 0f);
+            this.previousItem = digivice.item;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -30,14 +35,53 @@ namespace DigiBlock.Content.UI
             Rectangle slotRect = new((int)slotPosition.X, (int)slotPosition.Y, 50, 50);
             bool hovering = slotRect.Contains(Main.mouseX, Main.mouseY);
 
-            if (hovering)
+            if (hovering && (Main.mouseItem.type == ItemID.None || Main.mouseItem.ModItem is DigimonCard digimonCard))
             {
                 Main.LocalPlayer.mouseInterface = true;
                 ItemSlot.MouseHover(ref digivice.item, ItemSlot.Context.InventoryItem);
                 ItemSlot.LeftClick(ref digivice.item, ItemSlot.Context.InventoryItem);
-                ItemSlot.RightClick(ref digivice.item, ItemSlot.Context.InventoryItem); 
+                ItemSlot.RightClick(ref digivice.item, ItemSlot.Context.InventoryItem);
+
+                bool wasAir = previousItem.IsAir;
+                bool isAir = digivice.item.IsAir;
+
+                // Now compare with previous state
+                if (!Item.Equals(previousItem, digivice.item))
+                {
+                    // Case: Removed
+                    if (!wasAir && isAir)
+                    {
+                        Console.WriteLine("Card removed");
+                        DigimonCard c = previousItem.ModItem as DigimonCard;
+                        c.digimon.NPC.active = false;
+                    }
+                    // Case: Inserted
+                    else if (wasAir && !isAir)
+                    {
+                        Console.WriteLine("Card inserted");
+                        DigimonCard c = digivice.item.ModItem as DigimonCard;
+                        Player player = Main.LocalPlayer;
+                        int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c.digimon.Type);
+                        if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
+                        {
+                            digiNPC.copyData(c.digimon);
+                            digiNPC.NPC.active = true;
+                            c.digimon = digiNPC;
+                        }
+                    }
+                    // Case: Swapped
+                    else if (!wasAir && !isAir)
+                    {
+                        Console.WriteLine("Card swapped");
+                        DigimonCard c1 = previousItem.ModItem as DigimonCard;
+                        c1.digimon.NPC.active = false;
+                        DigimonCard c2 = digivice.item.ModItem as DigimonCard;
+                        c2.digimon.NPC.active = true;
+                    }
+                    previousItem = digivice.item;
+                }
             }
-            
+
             ItemSlot.Draw(spriteBatch, ref digivice.item, ItemSlot.Context.ShopItem, dimensions.Position());
         }
     }

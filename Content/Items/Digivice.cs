@@ -33,9 +33,9 @@ namespace DigiBlock.Content.Items // Where is your code locates
             Item.useTurn = true;
             Item.value = 10000;
             Item.rare = ItemRarityID.Blue;
+            
 
-            item = new Item();
-            item.SetDefaults(0); // Empty
+            item = new Item(ItemID.None);
         }
 
         // Creating item craft
@@ -84,7 +84,6 @@ namespace DigiBlock.Content.Items // Where is your code locates
             base.ModifyTooltips(tooltips);
             var digimonData = item.Name;
             // TODO:Add more digimon data on display
-
 
             var line = new TooltipLine(Mod, "Digivice Digimon", digimonData);
             tooltips.Add(line);

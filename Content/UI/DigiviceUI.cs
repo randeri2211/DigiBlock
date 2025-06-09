@@ -18,8 +18,8 @@ namespace DigiBlock.Content.UI
             panel = new UIDraggablePanel();
 
             panel.SetPadding(10);
-            panel.Left.Set(400f, 0f);
-            panel.Top.Set(200f, 0f);
+            panel.Left.Set(0f, 0.5f);
+            panel.Top.Set(0f, 0.2f);
             panel.Width.Set(100f, 0f);
             panel.Height.Set(100f, 0f);
             Append(panel);

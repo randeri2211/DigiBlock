@@ -26,11 +26,11 @@ namespace DigiBlock.Content.Systems
             }
             catch (Exception ex)
             {
-                mod.Logger.Error($"[CSV ERROR] {ex.Message}");
+                mod.Logger.Error($"[JSON ERROR] {ex.Message}");
             }
         }
 
-        public override void PreUpdateEntities()
+        public override void PreUpdateNPCs()
         {
             Mod mod = ModContent.GetInstance<DigiBlock>();
             int count = 0;
@@ -38,12 +38,12 @@ namespace DigiBlock.Content.Systems
             {
                 if (Main.npc[i].ModNPC is DigimonBase digimon)
                 {
-                    if (digimon.tamed)
+                    if (digimon.NPC.friendly)
                     {
                         count += 1;
                         string[] fullName = digimon.GetType().ToString().Split('.');
                         string digimonName = fullName[fullName.Length - 1];
-                        Console.WriteLine($"{digimonName} {digimon.NPC.life}");
+                        // Console.WriteLine($"{digimonName} {digimon.NPC.life}");
                         if (evolutions.RootElement.TryGetProperty(digimonName, out JsonElement digivolutions))
                         {
                             foreach (var digiv in digivolutions.EnumerateArray())
@@ -56,14 +56,12 @@ namespace DigiBlock.Content.Systems
                                     mod.Logger.Info("can evolve");
                                     Evolve(digimon, evolutionName);
                                 }
-
-                                mod.Logger.Info($"[EVOLUTION] {digimonName} → {evolutionName}");
                             }
                         }
                     }
                 }
             }
-            mod.Logger.Info(count);
+            // mod.Logger.Info("count: " + count);
         }
 
         public bool CanEvolve(DigimonBase digimon, JsonElement conditions)
@@ -98,12 +96,17 @@ namespace DigiBlock.Content.Systems
                 int type = evolved.Type;
                 Vector2 pos = npc.Center;
                 int newNpcId = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, type);
-                if (Main.npc[newNpcId].ModNPC is DigimonBase evolvedNPC)
+                if (Main.npc[newNpcId].ModNPC is DigimonBase evolvedNPC && evolvedNPC.NPC.active)
                 {
-                    evolvedNPC.tamed = digimon.tamed;
-                    evolvedNPC.level = digimon.level;
-                    evolvedNPC.NPC.lifeMax = digimon.NPC.lifeMax + DigiblockConstants.EvolutionBonus;
-                    evolvedNPC.NPC.damage = digimon.NPC.damage + DigiblockConstants.EvolutionBonus;
+                    mod.Logger.Debug("Damage before " + digimon.NPC.damage);
+                    digimon.card.digimon = evolvedNPC;
+                    evolvedNPC.copyData(digimon);
+                    evolvedNPC.NPC.lifeMax += DigiblockConstants.EvolutionBonus;
+                    evolvedNPC.NPC.damage += DigiblockConstants.EvolutionBonus;
+                    evolvedNPC.baseDmg += DigiblockConstants.EvolutionBonus;
+                    mod.Logger.Debug("Damage after " + evolvedNPC.NPC.damage);
+                    mod.Logger.Debug("Damage after " + evolvedNPC.baseDmg);
+
                 }
             }
             digimon.justEvolved = true;
