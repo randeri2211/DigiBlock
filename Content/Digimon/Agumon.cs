@@ -25,7 +25,6 @@ namespace DigiBlock.Content.Digimon
             NPC.width = 32;
             NPC.height = 32;
             NPC.lifeMax = 10;
-            AnimationType = NPCID.Guide;
             base.SetDefaults();
         }
 
