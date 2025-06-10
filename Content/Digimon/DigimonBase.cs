@@ -16,19 +16,21 @@ namespace DigiBlock.Content.Digimon
         Ultimate,
         Mega
     }
-    public class DigimonBase : ModNPC
+    public abstract class DigimonBase : ModNPC
     {
         public string name;
         public DigimonCard card;
         public bool justEvolved = false;
-        // public bool tamed = false;
         public bool summoned = false;
         public Entity wildTarget = null;
         public int level = 16;
         public Evolutions evoStage;
         private int currentEXP = 0;
         private int maxEXP = DigiblockConstants.StartingEXP;
+        // Stats
+        // HP and maxHP are already implemented as NPC.life and NPC.lifeMax
         public int baseDmg;
+        public int agility;
 
         public override void SetStaticDefaults()
         {
@@ -53,7 +55,7 @@ namespace DigiBlock.Content.Digimon
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
 
-     
+
         public override void SetDefaults()
         {
             name = Name;
@@ -83,44 +85,45 @@ namespace DigiBlock.Content.Digimon
         public override void AI()
         {
             // Targeting
-            if (NPC.friendly)
+            if (wildTarget == null)
             {
-                if (wildTarget == null)
+                // Console.WriteLine("Aiming: ");
+                if (NPC.friendly)
                 {
                     TargetHostileNPC();
                 }
-                
-                if (wildTarget != null)
-                {
-                    Console.WriteLine("Friendly Targeting: " + Main.npc[NPC.target].FullName);
-
-                    TamedAI();
-                }
-
-
-            }
-            else
-            {
-                if (wildTarget == null)
+                else
                 {
                     TargetFriendlyDigimonPlayer();
-                    // Console.WriteLine("Hostile Targeting: " + wildTarget.ToString() + " in target");
                 }
-
-
-                Player player = Main.player[NPC.target];
-
-                if (!wildTarget.active)
-                {
-                    NPC.EncourageDespawn(10);
-                    return;
-                }
-
-                WildAI();
-
             }
-            
-            base.AI();
+            if (wildTarget != null)
+            {
+                // Console.WriteLine("Targeting: " + wildTarget);
+                // Turn towards the target
+                if (wildTarget.Center.X > NPC.Center.X)
+                {
+                    NPC.direction = 1;
+                }
+                else
+                {
+                    NPC.direction = -1;
+                }
+                NPC.spriteDirection = NPC.direction;
+
+                ContactDamage();
+            }
+            if (!NPC.friendly && wildTarget == null)
+            {
+                NPC.EncourageDespawn(10);
+                return;
+            }
+
+            // Reset targeting if target is dead
+            if (wildTarget != null && !wildTarget.active)
+            {
+                wildTarget = null;
+            }
         }
 
         private void TargetHostileNPC()
@@ -137,18 +140,16 @@ namespace DigiBlock.Content.Digimon
                     float distance = Vector2.Distance(NPC.Center, target.Center);
                     if (distance < closestDistance)
                     {
-                        Console.WriteLine($"{target.FullName} {distance} {closestDistance}");
                         closestDistance = distance;
                         closestEnemy = i;
                     }
                 }
             }
-            Console.WriteLine($"outside {closestEnemy} {closestDistance}");
+
             if (closestEnemy != -1)
             {
                 wildTarget = Main.npc[closestEnemy];
-                NPC.target = closestEnemy; // Ensure the NPC isn't auto-targeting players
-                if (Main.npc[closestEnemy].Center.X > NPC.Center.X)
+                if (wildTarget.Center.X > NPC.Center.X)
                 {
                     NPC.direction = 1;
                 }
@@ -242,11 +243,11 @@ namespace DigiBlock.Content.Digimon
             base.OnHitPlayer(target, hurtInfo);
         }
 
-        public void TamedAI()
+        public void ContactDamage()
         {
             foreach (NPC target in Main.npc)
             {
-                if (target.active && !target.friendly && !target.townNPC && target.CanBeChasedBy(NPC))
+                if (target.active && NPC.friendly != target.friendly && target.CanBeChasedBy(NPC))
                 {
                     // Simple bounding box check for contact
                     if (NPC.Hitbox.Intersects(target.Hitbox))
@@ -274,10 +275,8 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        public void WildAI()
-        {
-
-        }
+        public virtual void WildAI() { }
+        public virtual void TamedAI(){}
 
     }
 }

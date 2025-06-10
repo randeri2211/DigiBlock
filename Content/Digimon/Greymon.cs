@@ -6,7 +6,7 @@ using DigiBlock.Content.Items.Digimon;
 
 namespace DigiBlock.Content.Digimon
 {
-    public class Greymon : DigimonBase
+    public class Greymon : WalkingDigimonBase
     {
         public override void SetStaticDefaults()
         {
@@ -22,6 +22,7 @@ namespace DigiBlock.Content.Digimon
             NPC.width = 32;
             NPC.height = 32;
             baseDmg = 20;
+            agility = 25;
             NPC.lifeMax = 15;
             base.SetDefaults();
         }

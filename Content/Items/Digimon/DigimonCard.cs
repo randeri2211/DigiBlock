@@ -66,11 +66,9 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonName", "Name: " + digimon.name));
                 tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Digital Damage: " + digimon.baseDmg));
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Digital Damage: " + digimon.baseDmg)); //TODO:Change for an ability damage
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Contact Damage: " + digimon.NPC.damage));
-                tooltips.Add(new TooltipLine(Mod, "DigimonActive", "Active: " + digimon.NPC.active));
-                tooltips.Add(new TooltipLine(Mod, "Digimonpos", "Pos: " + digimon.NPC.Center.X + "," + digimon.NPC.Center.Y));
-                tooltips.Add(new TooltipLine(Mod, "Digimondir", "Dir: " + digimon.NPC.direction));
+                tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Contact Damage: " + digimon.agility));
             }
             tooltips.Add(new TooltipLine(Mod, "Type", "Type: " + getDigimonNpcType()));
         }
@@ -101,7 +99,6 @@ namespace DigiBlock.Content.Items.Digimon
                 return -1;
             if (digimon != null)
             {
-                Console.WriteLine("killed");
                 NPC npc = digimon.NPC;
                 npc.StrikeInstantKill();
                 npc.life = 0;
@@ -114,7 +111,6 @@ namespace DigiBlock.Content.Items.Digimon
             int npcIndex = NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y, _digimonNpcType);
             digimon = Main.npc[npcIndex].ModNPC as DigimonBase;
 
-            Console.WriteLine("created");
             digimon.card = this;
             digimon.NPC.friendly = true;
             digimon.NPC.active = false;
