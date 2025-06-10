@@ -6,7 +6,6 @@ using Terraria.ModLoader.IO;
 using System;
 using Terraria.GameContent.UI;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
 using DigiBlock.Common;
 
 
@@ -15,6 +14,7 @@ namespace DigiBlock.Content.Items.Digimon
     public class DigimonCard : ModItem
     {
         public DigimonBase digimon;
+        public Digivice digivice;
         private int _digimonNpcType = -1;
         public int getDigimonNpcType()
         {
@@ -32,8 +32,8 @@ namespace DigiBlock.Content.Items.Digimon
 
         public override void SetDefaults()
         {
-            Item.width = 32;
-            Item.height = 32;
+            Item.width = 17;
+            Item.height = 23;
             Item.maxStack = 1;
             Item.rare = ItemRarityID.Blue;
         }
@@ -55,7 +55,6 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
                 tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
             }
-            tooltips.Add(new TooltipLine(Mod, "Type", "Type: " + getDigimonNpcType()));
         }
 
         public override void SaveData(Terraria.ModLoader.IO.TagCompound tag)
@@ -121,34 +120,6 @@ namespace DigiBlock.Content.Items.Digimon
             return npcIndex;
         }
 
-        public Vector2? FindItemLocation()
-        {
-            // Check players
-            foreach (Player player in Main.player)
-            {
-                if (!player.active) continue;
-                foreach (Item invItem in player.inventory)
-                {
-                    if (invItem.ModItem == this)
-                        return player.Center;
-                }
-            }
-            Console.WriteLine("Checked Players");
-            // Check chests
-            for (int i = 0; i < Main.chest.Length; i++)
-            {
-                Chest chest = Main.chest[i];
-                if (chest == null) continue;
-
-                foreach (Item chestItem in chest.item)
-                {
-                    if (chestItem.ModItem == this)
-                        return new Point(chest.x, chest.y).ToWorldCoordinates();
-                }
-            }
-            Console.WriteLine("Checked Chests");
-
-            return null;
-        }
+        
     }
 }

@@ -21,9 +21,10 @@ namespace DigiBlock.Content.Digimon
             //Targeting and contact damage
             base.AI();
 
+            float moveSpeed = agility * DigiblockConstants.AgilityMoveSpeedMultiplier; // walking speed
             if (wildTarget != null && wildTarget.active)
             {
-                float moveSpeed = agility * DigiblockConstants.AgilityMoveSpeedMultiplier; // walking speed
+                
                 float distanceX = wildTarget.Center.X - NPC.Center.X;
 
                 // Apply velocity towards target
@@ -36,7 +37,6 @@ namespace DigiBlock.Content.Digimon
                     NPC.velocity.X *= 0.9f; // slow down near target
                 }
 
-                // Optional: jump if target is above and we're grounded
                 if (wildTarget.Center.Y < NPC.Center.Y - 20 && NPC.velocity.Y == 0)
                 {
                     NPC.velocity.Y = -5f; // jump up
@@ -44,6 +44,26 @@ namespace DigiBlock.Content.Digimon
             }
             else
             {
+                // Tamed without target
+                if (NPC.friendly)
+                {
+                    float distanceX = start.X - NPC.Center.X;
+
+                    // Apply velocity towards target
+                    if (Math.Abs(distanceX) > 10f) // prevent jitter
+                    {
+                        NPC.velocity.X = Math.Sign(distanceX) * moveSpeed;
+                    }
+                    else
+                    {
+                        NPC.velocity.X *= 0.9f; // slow down near target
+                    }
+
+                    if (start.Y < NPC.Center.Y - 20 && NPC.velocity.Y == 0)
+                    {
+                        NPC.velocity.Y = -5f; // jump up
+                    }
+                }
                 NPC.velocity.X *= 0.9f; // idle drift
             }
 

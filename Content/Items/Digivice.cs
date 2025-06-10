@@ -8,6 +8,7 @@ using DigiBlock.Content.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.UI;
+using Microsoft.Xna.Framework;
 
 
 namespace DigiBlock.Content.Items // Where is your code locates
@@ -16,7 +17,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
     {
         // TODO: Needs to hold a digimon item
         public Item item = new Item();
-        private String item_tag = "item";
+        private string item_tag = "item";
 
         public override void SetStaticDefaults()
         {
@@ -33,7 +34,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
             Item.useTurn = true;
             Item.value = 10000;
             Item.rare = ItemRarityID.Blue;
-            
+
 
             item = new Item(ItemID.None);
         }
@@ -87,6 +88,36 @@ namespace DigiBlock.Content.Items // Where is your code locates
 
             var line = new TooltipLine(Mod, "Digivice Digimon", digimonData);
             tooltips.Add(line);
+        }
+        
+        public Vector2 FindItemLocation()
+        {
+            // Check players
+            foreach (Player player in Main.player)
+            {
+                if (!player.active) continue;
+                foreach (Item invItem in player.inventory)
+                {
+                    if (invItem.ModItem == this)
+                        return player.Center;
+                }
+            }
+            Console.WriteLine("Checked Players");
+            // Check chests
+            for (int i = 0; i < Main.chest.Length; i++)
+            {
+                Chest chest = Main.chest[i];
+                if (chest == null) continue;
+
+                foreach (Item chestItem in chest.item)
+                {
+                    if (chestItem.ModItem == this)
+                        return new Point(chest.x, chest.y).ToWorldCoordinates();
+                }
+            }
+            Console.WriteLine("Checked Chests");
+
+            return new Vector2(0,0);
         }
     }
 }

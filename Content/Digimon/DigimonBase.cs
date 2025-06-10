@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using DigiBlock.Common;
 using DigiBlock.Content.Items.Digimon;
 using System.ComponentModel;
+using DigiBlock.Content.Damage;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -22,6 +23,8 @@ namespace DigiBlock.Content.Digimon
         public int lootType;
         public string name;
         public DigimonCard card;
+        public Vector2 start;
+        public float startDistance;
         public bool justEvolved = false;
         public bool summoned = false;
         public Entity wildTarget = null;
@@ -116,6 +119,7 @@ namespace DigiBlock.Content.Digimon
                     TargetFriendlyDigimonPlayer();
                 }
             }
+
             if (wildTarget != null)
             {
                 // Console.WriteLine("Targeting: " + wildTarget);
@@ -132,7 +136,19 @@ namespace DigiBlock.Content.Digimon
 
                 ContactDamage();
             }
-            if (!NPC.friendly && wildTarget == null)
+            else if (NPC.friendly)
+            {
+                if (start.X > NPC.Center.X)
+                {
+                    NPC.direction = 1;
+                }
+                else
+                {
+                    NPC.direction = -1;
+                }
+                NPC.spriteDirection = NPC.direction;
+            }
+            else
             {
                 NPC.EncourageDespawn(10);
                 return;
@@ -149,7 +165,9 @@ namespace DigiBlock.Content.Digimon
         {
             int closestEnemy = -1;
             float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
-            Console.WriteLine("card position "+ card.FindItemLocation());
+            float maxDistance = NPCID.Sets.DangerDetectRange[Type];
+            start = card.digivice.FindItemLocation();
+            startDistance = Vector2.Distance(start, NPC.Center);
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC target = Main.npc[i];
@@ -157,7 +175,8 @@ namespace DigiBlock.Content.Digimon
                 if (target.active && !target.friendly && !target.townNPC && target.CanBeChasedBy(this))
                 {
                     float distance = Vector2.Distance(NPC.Center, target.Center);
-                    if (distance < closestDistance)
+                    float targetStartDistance = Vector2.Distance(start, target.Center);
+                    if (distance < closestDistance && targetStartDistance < maxDistance)
                     {
                         closestDistance = distance;
                         closestEnemy = i;
@@ -180,8 +199,11 @@ namespace DigiBlock.Content.Digimon
             }
             else
             {
+                if (startDistance > maxDistance)
+                {
+                    NPC.Center = start;
+                }
                 NPC.target = 255;
-                NPC.velocity *= 0.95f; // idle
             }
         }
 
@@ -283,14 +305,23 @@ namespace DigiBlock.Content.Digimon
                         if (target.immune[NPC.whoAmI] <= 0)
                         {
                             int damage = baseDmg;
-
+                            
                             // Apply contact damage manually
                             NPC.HitInfo hitInfo = new()
                             {
                                 Damage = damage,
                                 Knockback = 1f,
-                                HitDirection = NPC.direction
+                                HitDirection = NPC.direction,
+                                DamageType = ModContent.GetInstance<DigitalDamage>(),
                             };
+
+                            // Add Digital Damage modifiers
+                            if (NPC.friendly)
+                            {
+
+                                // hitInfo.Crit = true;
+                                // hitInfo.Damage = hitInfo.Damage;
+                            }
 
                             target.StrikeNPC(hitInfo);
 

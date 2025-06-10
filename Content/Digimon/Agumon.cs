@@ -27,6 +27,5 @@ namespace DigiBlock.Content.Digimon
             NPC.lifeMax = 10;
             base.SetDefaults();
         }
-
     }
 }

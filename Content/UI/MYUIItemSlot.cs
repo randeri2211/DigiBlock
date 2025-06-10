@@ -51,14 +51,13 @@ namespace DigiBlock.Content.UI
                     // Case: Removed
                     if (!wasAir && isAir)
                     {
-                        Console.WriteLine("Card removed");
                         DigimonCard c = previousItem.ModItem as DigimonCard;
                         c.digimon.NPC.active = false;
+                        c.digivice = null;
                     }
                     // Case: Inserted
                     else if (wasAir && !isAir)
                     {
-                        Console.WriteLine("Card inserted");
                         DigimonCard c = digivice.item.ModItem as DigimonCard;
                         Player player = Main.LocalPlayer;
                         int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c.digimon.Type);
@@ -67,16 +66,25 @@ namespace DigiBlock.Content.UI
                             digiNPC.copyData(c.digimon);
                             digiNPC.NPC.active = true;
                             c.digimon = digiNPC;
+                            c.digivice = digivice;
                         }
                     }
                     // Case: Swapped
                     else if (!wasAir && !isAir)
                     {
-                        Console.WriteLine("Card swapped");
                         DigimonCard c1 = previousItem.ModItem as DigimonCard;
                         c1.digimon.NPC.active = false;
+                        c1.digivice = null;
                         DigimonCard c2 = digivice.item.ModItem as DigimonCard;
-                        c2.digimon.NPC.active = true;
+                        Player player = Main.LocalPlayer;//TODO:Change to check the player
+                        int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c2.digimon.Type);
+                        if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
+                        {
+                            digiNPC.copyData(c2.digimon);
+                            digiNPC.NPC.active = true;
+                            c2.digimon = digiNPC;
+                        }
+                        c2.digivice = digivice;
                     }
                     previousItem = digivice.item;
                 }
