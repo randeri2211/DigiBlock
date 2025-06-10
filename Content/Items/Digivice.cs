@@ -32,7 +32,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
             Item.height = 32;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useTime = 10;
-            Item.useAnimation = 10;
+            Item.useAnimation = Item.useTime;
             Item.useTurn = true;
             Item.value = 10000;
             Item.rare = ItemRarityID.Blue;
@@ -103,9 +103,10 @@ namespace DigiBlock.Content.Items // Where is your code locates
                     if (invItem == Item || (invItem.ModItem != null && invItem.ModItem == Item.ModItem))
                     {
                         return true;
-                    } 
+                    }
                 }
             }
+            Console.WriteLine("checked players");
             return false;
         }
         

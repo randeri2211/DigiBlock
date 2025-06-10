@@ -7,6 +7,7 @@ using DigiBlock.Common;
 using DigiBlock.Content.Items.Digimon;
 using System.ComponentModel;
 using DigiBlock.Content.Damage;
+using DigiBlock.Content.Systems;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -268,6 +269,9 @@ namespace DigiBlock.Content.Digimon
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
                 agility += 1;
                 NPC.lifeMax += 5;
+                baseDmg += 1;
+                NPC.damage += 1;
+                NPC.defense += 1;
                 CheckLevelUp();
             }
         }
@@ -284,7 +288,11 @@ namespace DigiBlock.Content.Digimon
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit)
         {
-            base.OnHitNPC(target, hit);
+            if (target.TryGetGlobalNPC(out LastHitNPC victim))
+            {
+                Console.WriteLine("Changed victim");
+                victim.lastHitByDigimon = this;
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
@@ -323,6 +331,11 @@ namespace DigiBlock.Content.Digimon
                                 // hitInfo.Damage = hitInfo.Damage;
                             }
 
+                            // Store this Digimon in the target's GlobalNPC
+                            if (target.TryGetGlobalNPC(out LastHitNPC victim))
+                            {
+                                victim.lastHitByDigimon = this;
+                            }
                             target.StrikeNPC(hitInfo);
 
                             // Add immunity time to prevent rapid hits
