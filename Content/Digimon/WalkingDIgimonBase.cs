@@ -47,7 +47,7 @@ namespace DigiBlock.Content.Digimon
                 // Tamed without target
                 if (NPC.friendly)
                 {
-                    float distanceX = start.X - NPC.Center.X;
+                    float distanceX = playerLocation.X - NPC.Center.X;
 
                     // Apply velocity towards target
                     if (Math.Abs(distanceX) > 10f) // prevent jitter
@@ -59,7 +59,7 @@ namespace DigiBlock.Content.Digimon
                         NPC.velocity.X *= 0.9f; // slow down near target
                     }
 
-                    if (start.Y < NPC.Center.Y - 20 && NPC.velocity.Y == 0)
+                    if (playerLocation.Y < NPC.Center.Y - 20 && NPC.velocity.Y == 0)
                     {
                         NPC.velocity.Y = -5f; // jump up
                     }

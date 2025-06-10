@@ -54,6 +54,8 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Contact Damage: " + digimon.NPC.damage));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
                 tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
+                tooltips.Add(new TooltipLine(Mod, "Digimonactive", "active: " + digimon.NPC.active));
+                tooltips.Add(new TooltipLine(Mod, "digimonpos", "pos: " + digimon.NPC.Center));
             }
         }
 

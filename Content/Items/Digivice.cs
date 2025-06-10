@@ -21,11 +21,13 @@ namespace DigiBlock.Content.Items // Where is your code locates
 
         public override void SetStaticDefaults()
         {
+            Console.WriteLine("digivice created");
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; // How many items need for research in Journey Mode
         }
 
         public override void SetDefaults()
         {
+            Console.WriteLine("digivice created2");
             Item.width = 32;
             Item.height = 32;
             Item.useStyle = ItemUseStyleID.HoldUp;
@@ -89,6 +91,23 @@ namespace DigiBlock.Content.Items // Where is your code locates
             var line = new TooltipLine(Mod, "Digivice Digimon", digimonData);
             tooltips.Add(line);
         }
+
+        public bool IsItemStillAccessible()
+        {
+            // Check player inventories
+            foreach (Player player in Main.player)
+            {
+                if (!player.active) continue;
+                foreach (Item invItem in player.inventory)
+                {
+                    if (invItem == Item || (invItem.ModItem != null && invItem.ModItem == Item.ModItem))
+                    {
+                        return true;
+                    } 
+                }
+            }
+            return false;
+        }
         
         public Vector2 FindItemLocation()
         {
@@ -102,22 +121,8 @@ namespace DigiBlock.Content.Items // Where is your code locates
                         return player.Center;
                 }
             }
-            Console.WriteLine("Checked Players");
-            // Check chests
-            for (int i = 0; i < Main.chest.Length; i++)
-            {
-                Chest chest = Main.chest[i];
-                if (chest == null) continue;
 
-                foreach (Item chestItem in chest.item)
-                {
-                    if (chestItem.ModItem == this)
-                        return new Point(chest.x, chest.y).ToWorldCoordinates();
-                }
-            }
-            Console.WriteLine("Checked Chests");
-
-            return new Vector2(0,0);
+            return new Vector2(0, 0);
         }
     }
 }

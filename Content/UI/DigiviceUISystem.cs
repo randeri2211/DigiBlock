@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using DigiBlock.Content.Items;
+using System;
 
 namespace DigiBlock.Content.UI
 {
@@ -11,7 +12,7 @@ namespace DigiBlock.Content.UI
     {
         private UserInterface digiviceInterface;
         internal DigiviceUI digiviceUI;
-
+        private Digivice openDigivice;
         public override void Load()
         {
             if (!Main.dedServ)
@@ -25,6 +26,15 @@ namespace DigiBlock.Content.UI
         public override void UpdateUI(GameTime gameTime)
         {
             digiviceInterface?.Update(gameTime);
+            if (openDigivice != null)
+            {
+                bool accessible = openDigivice.IsItemStillAccessible();
+                if (!accessible)
+                {
+                    CloseUI();
+                }
+                
+            }
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -70,11 +80,13 @@ namespace DigiBlock.Content.UI
         {
             digiviceUI.SetDigiviceItem(digivice);
             digiviceInterface?.SetState(digiviceUI);
+            openDigivice = digivice;
         }
 
         public void CloseUI()
         {
             digiviceInterface?.SetState(null);
+            openDigivice = null;
         }
     }
 }

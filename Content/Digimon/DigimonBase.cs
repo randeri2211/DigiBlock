@@ -23,8 +23,8 @@ namespace DigiBlock.Content.Digimon
         public int lootType;
         public string name;
         public DigimonCard card;
-        public Vector2 start;
-        public float startDistance;
+        public Vector2 playerLocation;
+        public float playerDistance;
         public bool justEvolved = false;
         public bool summoned = false;
         public Entity wildTarget = null;
@@ -84,7 +84,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void OnKill()
         {
-            if (lootType > 0)
+            if (lootType > 0 && !NPC.friendly)
             {
                 if (Main.netMode != NetmodeID.MultiplayerClient) // Only drop on server
                 {
@@ -138,7 +138,7 @@ namespace DigiBlock.Content.Digimon
             }
             else if (NPC.friendly)
             {
-                if (start.X > NPC.Center.X)
+                if (playerLocation.X > NPC.Center.X)
                 {
                     NPC.direction = 1;
                 }
@@ -166,8 +166,8 @@ namespace DigiBlock.Content.Digimon
             int closestEnemy = -1;
             float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
             float maxDistance = NPCID.Sets.DangerDetectRange[Type];
-            start = card.digivice.FindItemLocation();
-            startDistance = Vector2.Distance(start, NPC.Center);
+            playerLocation = card.digivice.FindItemLocation();
+            playerDistance = Vector2.Distance(playerLocation, NPC.Center);
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC target = Main.npc[i];
@@ -175,7 +175,7 @@ namespace DigiBlock.Content.Digimon
                 if (target.active && !target.friendly && !target.townNPC && target.CanBeChasedBy(this))
                 {
                     float distance = Vector2.Distance(NPC.Center, target.Center);
-                    float targetStartDistance = Vector2.Distance(start, target.Center);
+                    float targetStartDistance = Vector2.Distance(playerLocation, target.Center);
                     if (distance < closestDistance && targetStartDistance < maxDistance)
                     {
                         closestDistance = distance;
@@ -199,9 +199,9 @@ namespace DigiBlock.Content.Digimon
             }
             else
             {
-                if (startDistance > maxDistance)
+                if (playerDistance > maxDistance)
                 {
-                    NPC.Center = start;
+                    NPC.Center = playerLocation;
                 }
                 NPC.target = 255;
             }
