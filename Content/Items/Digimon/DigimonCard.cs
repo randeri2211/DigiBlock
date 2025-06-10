@@ -6,6 +6,8 @@ using Terraria.ModLoader.IO;
 using System;
 using Terraria.GameContent.UI;
 using Terraria.ID;
+using Microsoft.Xna.Framework;
+using DigiBlock.Common;
 
 
 namespace DigiBlock.Content.Items.Digimon
@@ -30,25 +32,6 @@ namespace DigiBlock.Content.Items.Digimon
 
         public override void SetDefaults()
         {
-            // // Player player = Main.LocalPlayer;
-            // // int npcIndex = NPC.NewNPC(null, (int)(player.Center.X), (int)(player.Center.Y), ModContent.NPCType<Agumon>()); // spawn off-screen
-            // // digimon = Main.npc[npcIndex].ModNPC as Agumon;
-            // if (digimonNpcType <= 0)
-            // {
-            //     Console.WriteLine("Digimon Typex:" + digimonNpcType);
-            //     digimonNpcType = ModContent.NPCType<Agumon>(); // fallback
-            //     Console.WriteLine("Digimon Typex after:" + digimonNpcType);
-            // }
-            // else
-            // {
-            //     Player player = Main.LocalPlayer;
-            //     int npcIndex = NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y, digimonNpcType);
-            //     Console.WriteLine("Digimon Type:" + Main.npc[npcIndex].FullName);
-            //     digimon = Main.npc[npcIndex].ModNPC as DigimonBase;
-            //     digimon.card = this;
-            //     digimon.NPC.friendly = true;
-            //     digimon.NPC.active = false;
-            // }
             Item.width = 32;
             Item.height = 32;
             Item.maxStack = 1;
@@ -64,33 +47,54 @@ namespace DigiBlock.Content.Items.Digimon
                 Player player = Main.LocalPlayer;
                 // mod.Logger.Info(digimon.name + "," + digimon.Name);
                 tooltips.Add(new TooltipLine(Mod, "DigimonName", "Name: " + digimon.name));
-                tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
+                tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
+                tooltips.Add(new TooltipLine(Mod, "DigimonEXP", "Exp: " + digimon.getEXP() + "/" + digimon.maxEXP));
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Digital Damage: " + digimon.baseDmg)); //TODO:Change for an ability damage
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Contact Damage: " + digimon.NPC.damage));
-                tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Contact Damage: " + digimon.agility));
+                tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
+                tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
             }
             tooltips.Add(new TooltipLine(Mod, "Type", "Type: " + getDigimonNpcType()));
-        }
-
-        public override void AddRecipes()
-        {
-            Recipe recipe = CreateRecipe();
-            // recipe.AddIngredient<SteelShard>(7); // We are using custom material for the craft, 7 Steel Shards
-            // recipe.AddIngredient(ItemID.Wood, 3); // Also, we are using vanilla material to craft, 3 Wood
-            // recipe.AddTile(TileID.Anvils); // Crafting station we need for craft, WorkBenches, Anvils etc. You can find them here - https://terraria.wiki.gg/wiki/Tile_IDs
-            recipe.Register();
         }
 
         public override void SaveData(Terraria.ModLoader.IO.TagCompound tag)
         {
             tag["npcType"] = getDigimonNpcType();
+            tag["baseDmg"] = digimon.baseDmg;
+            tag["agility"] = digimon.agility;
+            tag["level"] = digimon.level;
+            tag["exp"] = digimon.getEXP();
         }
 
         public override void LoadData(Terraria.ModLoader.IO.TagCompound tag)
         {
             if (tag.ContainsKey("npcType"))
+            {
                 setDigimonNpcType(tag.GetInt("npcType"));
+            }
+            if (tag.ContainsKey("baseDmg"))
+            {
+                digimon.baseDmg = tag.GetInt("baseDmg");
+            }
+            if (tag.ContainsKey("agility"))
+            {
+                digimon.agility = tag.GetInt("agility");
+            }
+            if (tag.ContainsKey("level"))
+            {
+                digimon.level = tag.GetInt("level");
+                digimon.maxEXP = DigiblockConstants.StartingEXP;
+                for (int i = 0; i < digimon.level; i++)
+                {
+                    digimon.maxEXP = (int)(digimon.maxEXP * DigiblockConstants.LevelingEXPMultiplier);
+                }
+            }
+            if (tag.ContainsKey("exp"))
+            { 
+                digimon.GiveEXP(tag.GetInt("exp"));
+            }
+            
         }
 
         private int TryInitializeDigimon()
@@ -115,6 +119,36 @@ namespace DigiBlock.Content.Items.Digimon
             digimon.NPC.friendly = true;
             digimon.NPC.active = false;
             return npcIndex;
+        }
+
+        public Vector2? FindItemLocation()
+        {
+            // Check players
+            foreach (Player player in Main.player)
+            {
+                if (!player.active) continue;
+                foreach (Item invItem in player.inventory)
+                {
+                    if (invItem.ModItem == this)
+                        return player.Center;
+                }
+            }
+            Console.WriteLine("Checked Players");
+            // Check chests
+            for (int i = 0; i < Main.chest.Length; i++)
+            {
+                Chest chest = Main.chest[i];
+                if (chest == null) continue;
+
+                foreach (Item chestItem in chest.item)
+                {
+                    if (chestItem.ModItem == this)
+                        return new Point(chest.x, chest.y).ToWorldCoordinates();
+                }
+            }
+            Console.WriteLine("Checked Chests");
+
+            return null;
         }
     }
 }

@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using DigiBlock.Common;
 using DigiBlock.Content.Items.Digimon;
+using System.ComponentModel;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -18,6 +19,7 @@ namespace DigiBlock.Content.Digimon
     }
     public abstract class DigimonBase : ModNPC
     {
+        public int lootType;
         public string name;
         public DigimonCard card;
         public bool justEvolved = false;
@@ -26,7 +28,7 @@ namespace DigiBlock.Content.Digimon
         public int level = 16;
         public Evolutions evoStage;
         private int currentEXP = 0;
-        private int maxEXP = DigiblockConstants.StartingEXP;
+        public int maxEXP = DigiblockConstants.StartingEXP;
         // Stats
         // HP and maxHP are already implemented as NPC.life and NPC.lifeMax
         public int baseDmg;
@@ -75,6 +77,23 @@ namespace DigiBlock.Content.Digimon
             NPC.damage = digimon.NPC.damage;
             baseDmg = digimon.baseDmg;
             NPC.active = digimon.NPC.active;
+        }
+
+        public override void OnKill()
+        {
+            if (lootType > 0)
+            {
+                if (Main.netMode != NetmodeID.MultiplayerClient) // Only drop on server
+                {
+                    int cardIndex = Item.NewItem(NPC.GetSource_Loot(), NPC.Hitbox, ModContent.ItemType<DigimonCard>(), 1);
+
+                    if (Main.item[cardIndex].ModItem is DigimonCard card)
+                    {
+                        card.setDigimonNpcType(lootType); // this Digimon's NPC type
+                    }
+                    // Try to assign card data post-drop if needed (see Note below)
+                }
+            }
         }
 
         public override bool PreAI()
@@ -130,7 +149,7 @@ namespace DigiBlock.Content.Digimon
         {
             int closestEnemy = -1;
             float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
-
+            Console.WriteLine("card position "+ card.FindItemLocation());
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC target = Main.npc[i];
@@ -204,12 +223,18 @@ namespace DigiBlock.Content.Digimon
 
         }
 
+        public int getEXP()
+        {
+            return currentEXP;
+        }
+
         public void GiveEXP(int exp)
         {
             if (exp > 0)
             {
                 currentEXP += exp;
             }
+            CheckLevelUp();
         }
 
         public void CheckLevelUp()
@@ -219,6 +244,8 @@ namespace DigiBlock.Content.Digimon
                 currentEXP -= maxEXP;
                 level += 1;
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
+                agility += 1;
+                NPC.lifeMax += 5;
                 CheckLevelUp();
             }
         }

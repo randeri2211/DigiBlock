@@ -4,7 +4,7 @@ using Terraria;
 
 namespace DigiBlock.Content.Digimon
 {
-    public class Koromon : DigimonBase
+    public class Koromon : JumpingDigimonBase
     {
         public override void SetStaticDefaults()
         {
@@ -21,7 +21,7 @@ namespace DigiBlock.Content.Digimon
             baseDmg = 5;
             agility = 5;
             NPC.width = 32;
-            NPC.height = 32;
+            NPC.height = 31;
             NPC.lifeMax = 10;
             AnimationType = NPCID.Guide;
             base.SetDefaults();

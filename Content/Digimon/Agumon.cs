@@ -19,6 +19,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            lootType = ModContent.GetInstance<Koromon>().Type;
             baseDmg = 5;
             agility = 5;
             NPC.width = 32;
@@ -28,18 +29,5 @@ namespace DigiBlock.Content.Digimon
             base.SetDefaults();
         }
 
-        public override void OnKill()
-        {
-            if (Main.netMode != NetmodeID.MultiplayerClient) // Only drop on server
-            {
-                int cardIndex = Item.NewItem(NPC.GetSource_Loot(), NPC.Hitbox, ModContent.ItemType<DigimonCard>(), 1);
-
-                if (Main.item[cardIndex].ModItem is DigimonCard card)
-                {
-                    card.setDigimonNpcType(ModContent.GetInstance<Koromon>().Type); // this Digimon's NPC type
-                }
-                // Try to assign card data post-drop if needed (see Note below)
-            }
-        }
     }
 }
