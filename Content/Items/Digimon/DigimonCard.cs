@@ -2,9 +2,6 @@ using DigiBlock.Content.Digimon;
 using Terraria;
 using Terraria.ModLoader;
 using System.Collections.Generic;
-using Terraria.ModLoader.IO;
-using System;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using DigiBlock.Common;
 using Microsoft.Xna.Framework;
@@ -51,10 +48,24 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
                 tooltips.Add(new TooltipLine(Mod, "DigimonEXP", "Exp: " + digimon.getEXP() + "/" + digimon.maxEXP));
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.contactDamage)); //TODO:Change for an ability damage
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.specialDamage));
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.contactDamage))); //TODO:Change for an ability damage
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.CalculateDamage(digimon.specialDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
-                tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
+                tooltips.Add(new TooltipLine(Mod, "DigimonType", "Digimon Type: " + digimon.Name));
+                TooltipLine attributeTooltip = new TooltipLine(Mod, "DigimonAttribute", "Digimon Attribute: " + digimon.attribute);
+                switch (digimon.attribute)
+                {
+                    case Attributes.Data:
+                        attributeTooltip.OverrideColor = Color.Blue;
+                        break;
+                    case Attributes.Virus:
+                        attributeTooltip.OverrideColor = Color.Red;
+                        break;
+                    case Attributes.Vaccine:
+                        attributeTooltip.OverrideColor = Color.Green;
+                        break;
+                }
+                tooltips.Add(attributeTooltip);
             }
         }
 
@@ -109,7 +120,6 @@ namespace DigiBlock.Content.Items.Digimon
             { 
                 digimon.NPC.lifeMax = tag.GetInt("maxHP");
             }
-            
         }
 
         public int TryInitializeDigimon()
@@ -147,10 +157,7 @@ namespace DigiBlock.Content.Items.Digimon
                 digimon.NPC.active = false;
                 digimon.playerOwner = null;
             }
-            
             return npcIndex;
         }
-
-        
     }
 }

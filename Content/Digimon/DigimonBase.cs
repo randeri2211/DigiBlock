@@ -5,7 +5,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using DigiBlock.Common;
 using DigiBlock.Content.Items.Digimon;
-using System.ComponentModel;
 using DigiBlock.Content.Damage;
 using DigiBlock.Content.Systems;
 
@@ -17,12 +16,20 @@ namespace DigiBlock.Content.Digimon
         Rookie,
         Champion,
         Ultimate,
-        Mega
+        Mega,
+    }
+    public enum Attributes
+    {
+        None,
+        Vaccine,
+        Data,
+        Virus,
     }
     public abstract class DigimonBase : ModNPC
     {
         public int lootType;
         public string name;
+        public Attributes attribute;
         public DigimonCard card;
         public Player playerOwner;
         public Vector2 playerLocation;
@@ -39,7 +46,7 @@ namespace DigiBlock.Content.Digimon
         public int contactDamage;
         public int specialDamage;
         public int agility;
-    
+
         public override void SetStaticDefaults()
         {
 
@@ -138,9 +145,9 @@ namespace DigiBlock.Content.Digimon
                 NPC.spriteDirection = NPC.direction;
                 if (NPC.friendly)
                 {
-                    ContactDamage();    
+                    ContactDamage();
                 }
-                
+
             }
             else if (NPC.friendly) // No target and am friendly-> return to player position
             {
@@ -167,15 +174,23 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        public int calculateDamage()
+        public int CalculateDamage(int damage, Attributes targetAttribute=Attributes.None)
         {
-            if (NPC.friendly)
+            // Increase based on attributes
+            if ((attribute == Attributes.Data && targetAttribute == Attributes.Vaccine) || (attribute == Attributes.Virus && targetAttribute == Attributes.Data) || (attribute == Attributes.Vaccine && targetAttribute == Attributes.Virus))
+            {
+                damage = damage + (int)(damage * DigiblockConstants.AttributeDamageMultiplier);
+            }
+            else if (attribute != targetAttribute && attribute != Attributes.None && targetAttribute != Attributes.None)
+            {
+                damage = (int)(damage * DigiblockConstants.AttributeDamageMultiplier);
+            }
+            if (playerOwner != null)
             {
                 var damageModifier = playerOwner.GetDamage<DigitalDamage>();
-                Console.WriteLine(damageModifier.Multiplicative + ":" + damageModifier.Additive);
-                return (int)((contactDamage + damageModifier.Additive) * damageModifier.Multiplicative);
+                damage = (int)((damage + damageModifier.Additive) * damageModifier.Multiplicative);
             }
-            return contactDamage;
+            return damage;
         }
 
         private void TargetHostileNPC()
@@ -187,7 +202,7 @@ namespace DigiBlock.Content.Digimon
             {
                 playerOwner = card.digivice.FindPlayer();
             }
-            
+
             playerLocation = playerOwner.Center;
             playerDistance = Vector2.Distance(playerLocation, NPC.Center);
             for (int i = 0; i < Main.npc.Length; i++)
@@ -307,20 +322,6 @@ namespace DigiBlock.Content.Digimon
             return !NPC.friendly;
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit)
-        {
-            if (target.TryGetGlobalNPC(out LastHitNPC victim))
-            {
-                Console.WriteLine("Changed victim");
-                victim.lastHitByDigimon = this;
-            }
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
-        {
-            base.OnHitPlayer(target, hurtInfo);
-        }
-
         public void ContactDamage()
         {
             foreach (NPC target in Main.npc)
@@ -332,12 +333,16 @@ namespace DigiBlock.Content.Digimon
                     {
                         // Optional: cooldown check
                         if (target.immune[NPC.whoAmI] <= 0)
-                        {                            
+                        {
+                            Attributes targetAttribute = Attributes.None;
+                            if (target.ModNPC is DigimonBase targetDigimon) {
+                                targetAttribute = targetDigimon.attribute;
+                            }
                             // Apply contact damage manually
                             NPC.HitInfo hitInfo = new()
                             {
                                 // Use the damage modifiers of the owner player in damage calculations
-                                Damage = calculateDamage(),
+                                Damage = CalculateDamage(contactDamage, targetAttribute),
                                 Knockback = 1f,
                                 HitDirection = NPC.direction,
                                 DamageType = ModContent.GetInstance<DigitalDamage>(),
@@ -368,7 +373,7 @@ namespace DigiBlock.Content.Digimon
         }
 
         public virtual void WildAI() { }
-        public virtual void TamedAI(){}
+        public virtual void TamedAI() { }
 
     }
 }

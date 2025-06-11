@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using DigiBlock.Content.Items;
-using System;
 
 namespace DigiBlock.Content.UI
 {

@@ -18,6 +18,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            attribute = Attributes.None;
             contactDamage = 5;
             agility = 5;
             NPC.width = 23;

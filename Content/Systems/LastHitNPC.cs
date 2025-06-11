@@ -1,9 +1,7 @@
-using System;
 using DigiBlock.Common;
 using DigiBlock.Content.Digimon;
 using Terraria;
 using Terraria.ModLoader;
-using DigiBlock.Common;
 
 namespace DigiBlock.Content.Systems
 {

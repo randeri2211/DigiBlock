@@ -16,16 +16,14 @@ namespace DigiBlock.Content.Items // Where is your code locates
         // TODO: Needs to hold a digimon item
         public Item item = new Item();
         private string item_tag = "item";
-        
+
         public override void SetStaticDefaults()
         {
-            Console.WriteLine("digivice created");
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; // How many items need for research in Journey Mode
         }
 
         public override void SetDefaults()
         {
-            Console.WriteLine("digivice created2");
             Item.width = 32;
             Item.height = 32;
             Item.useStyle = ItemUseStyleID.HoldUp;
