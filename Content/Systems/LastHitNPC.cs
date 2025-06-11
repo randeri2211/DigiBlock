@@ -14,7 +14,6 @@ namespace DigiBlock.Content.Systems
         public override bool InstancePerEntity => true;
         public override void OnKill(NPC npc)
         {
-            Console.WriteLine("on kill called");
             if (npc.TryGetGlobalNPC(out LastHitNPC victim) && victim.lastHitByDigimon != null)
             {
                 int expAmount = 0;

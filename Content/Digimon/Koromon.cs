@@ -18,7 +18,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
-            baseDmg = 5;
+            contactDamage = 5;
             agility = 5;
             NPC.width = 23;
             NPC.height = 12;

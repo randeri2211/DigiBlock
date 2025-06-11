@@ -22,7 +22,7 @@ namespace DigiBlock.Content.Digimon
             lootType = ModContent.GetInstance<Koromon>().Type;
             NPC.width = 32;
             NPC.height = 32;
-            baseDmg = 20;
+            contactDamage = 20;
             agility = 25;
             NPC.lifeMax = 15;
             base.SetDefaults();

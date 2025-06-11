@@ -105,9 +105,9 @@ namespace DigiBlock.Content.Systems
                     evolvedNPC.copyData(digimon);
                     evolvedNPC.NPC.lifeMax += DigiblockConstants.EvolutionBonus;
                     evolvedNPC.NPC.damage += DigiblockConstants.EvolutionBonus;
-                    evolvedNPC.baseDmg += DigiblockConstants.EvolutionBonus;
+                    evolvedNPC.contactDamage += DigiblockConstants.EvolutionBonus;
                     mod.Logger.Debug("Damage after " + evolvedNPC.NPC.damage);
-                    mod.Logger.Debug("Damage after " + evolvedNPC.baseDmg);
+                    mod.Logger.Debug("Damage after " + evolvedNPC.contactDamage);
                     mod.Logger.Debug("ff " + digimon.card.digimon.name);
                 }
             }

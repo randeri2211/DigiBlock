@@ -24,6 +24,7 @@ namespace DigiBlock.Content.Digimon
         public int lootType;
         public string name;
         public DigimonCard card;
+        public Player playerOwner;
         public Vector2 playerLocation;
         public float playerDistance;
         public bool justEvolved = false;
@@ -35,9 +36,10 @@ namespace DigiBlock.Content.Digimon
         public int maxEXP = DigiblockConstants.StartingEXP;
         // Stats
         // HP and maxHP are already implemented as NPC.life and NPC.lifeMax
-        public int baseDmg;
+        public int contactDamage;
+        public int specialDamage;
         public int agility;
-
+    
         public override void SetStaticDefaults()
         {
 
@@ -65,7 +67,7 @@ namespace DigiBlock.Content.Digimon
         public override void SetDefaults()
         {
             name = Name;
-            NPC.damage = baseDmg;
+            NPC.damage = contactDamage;
 
             NPC.friendly = false; // Wild digimon by default
         }
@@ -79,7 +81,7 @@ namespace DigiBlock.Content.Digimon
             NPC.lifeMax = digimon.NPC.lifeMax;
             NPC.life = digimon.NPC.life;
             NPC.damage = digimon.NPC.damage;
-            baseDmg = digimon.baseDmg;
+            contactDamage = digimon.contactDamage;
             NPC.active = digimon.NPC.active;
         }
 
@@ -134,10 +136,13 @@ namespace DigiBlock.Content.Digimon
                     NPC.direction = -1;
                 }
                 NPC.spriteDirection = NPC.direction;
-
-                ContactDamage();
+                if (NPC.friendly)
+                {
+                    ContactDamage();    
+                }
+                
             }
-            else if (NPC.friendly)
+            else if (NPC.friendly) // No target and am friendly-> return to player position
             {
                 if (playerLocation.X > NPC.Center.X)
                 {
@@ -162,12 +167,28 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
+        public int calculateDamage()
+        {
+            if (NPC.friendly)
+            {
+                var damageModifier = playerOwner.GetDamage<DigitalDamage>();
+                Console.WriteLine(damageModifier.Multiplicative + ":" + damageModifier.Additive);
+                return (int)((contactDamage + damageModifier.Additive) * damageModifier.Multiplicative);
+            }
+            return contactDamage;
+        }
+
         private void TargetHostileNPC()
         {
             int closestEnemy = -1;
             float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
             float maxDistance = NPCID.Sets.DangerDetectRange[Type];
-            playerLocation = card.digivice.FindItemLocation();
+            if (playerOwner == null)
+            {
+                playerOwner = card.digivice.FindPlayer();
+            }
+            
+            playerLocation = playerOwner.Center;
             playerDistance = Vector2.Distance(playerLocation, NPC.Center);
             for (int i = 0; i < Main.npc.Length; i++)
             {
@@ -269,7 +290,7 @@ namespace DigiBlock.Content.Digimon
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
                 agility += 1;
                 NPC.lifeMax += 5;
-                baseDmg += 1;
+                contactDamage += 1;
                 NPC.damage += 1;
                 NPC.defense += 1;
                 CheckLevelUp();
@@ -311,16 +332,16 @@ namespace DigiBlock.Content.Digimon
                     {
                         // Optional: cooldown check
                         if (target.immune[NPC.whoAmI] <= 0)
-                        {
-                            int damage = baseDmg;
-                            
+                        {                            
                             // Apply contact damage manually
                             NPC.HitInfo hitInfo = new()
                             {
-                                Damage = damage,
+                                // Use the damage modifiers of the owner player in damage calculations
+                                Damage = calculateDamage(),
                                 Knockback = 1f,
                                 HitDirection = NPC.direction,
                                 DamageType = ModContent.GetInstance<DigitalDamage>(),
+                                // HideCombatText = true,
                             };
 
                             // Add Digital Damage modifiers

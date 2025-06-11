@@ -7,6 +7,7 @@ using System;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 using DigiBlock.Common;
+using Microsoft.Xna.Framework;
 
 
 namespace DigiBlock.Content.Items.Digimon
@@ -50,8 +51,8 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
                 tooltips.Add(new TooltipLine(Mod, "DigimonEXP", "Exp: " + digimon.getEXP() + "/" + digimon.maxEXP));
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Digital Damage: " + digimon.baseDmg)); //TODO:Change for an ability damage
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Contact Damage: " + digimon.NPC.damage));
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.contactDamage)); //TODO:Change for an ability damage
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.specialDamage));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
                 tooltips.Add(new TooltipLine(Mod, "DigimonType", "Type: " + digimon.Name));
             }
@@ -60,10 +61,13 @@ namespace DigiBlock.Content.Items.Digimon
         public override void SaveData(Terraria.ModLoader.IO.TagCompound tag)
         {
             tag["npcType"] = getDigimonNpcType();
-            tag["baseDmg"] = digimon.baseDmg;
+            tag["contactDamage"] = digimon.contactDamage;
+            tag["specialDamage"] = digimon.specialDamage;
             tag["agility"] = digimon.agility;
             tag["level"] = digimon.level;
             tag["exp"] = digimon.getEXP();
+            tag["currentHP"] = digimon.NPC.life;
+            tag["maxHP"] = digimon.NPC.lifeMax;
         }
 
         public override void LoadData(Terraria.ModLoader.IO.TagCompound tag)
@@ -72,9 +76,13 @@ namespace DigiBlock.Content.Items.Digimon
             {
                 setDigimonNpcType(tag.GetInt("npcType"));
             }
-            if (tag.ContainsKey("baseDmg"))
+            if (tag.ContainsKey("contactDamage"))
             {
-                digimon.baseDmg = tag.GetInt("baseDmg");
+                digimon.contactDamage = tag.GetInt("contactDamage");
+            }
+            if (tag.ContainsKey("specialDamage"))
+            {
+                digimon.specialDamage = tag.GetInt("specialDamage");
             }
             if (tag.ContainsKey("agility"))
             {
@@ -90,16 +98,26 @@ namespace DigiBlock.Content.Items.Digimon
                 }
             }
             if (tag.ContainsKey("exp"))
-            { 
+            {
                 digimon.GiveEXP(tag.GetInt("exp"));
+            }
+            if (tag.ContainsKey("currentHP"))
+            {
+                digimon.NPC.life = tag.GetInt("currentHP");
+            }
+            if (tag.ContainsKey("maxHP"))
+            { 
+                digimon.NPC.lifeMax = tag.GetInt("maxHP");
             }
             
         }
 
-        private int TryInitializeDigimon()
+        public int TryInitializeDigimon()
         {
             if (_digimonNpcType <= 0)
                 return -1;
+
+            // Kill the swap digimon
             if (digimon != null)
             {
                 NPC npc = digimon.NPC;
@@ -109,14 +127,27 @@ namespace DigiBlock.Content.Items.Digimon
                 npc.netSkip = -1;
                 npc.netUpdate = true;
             }
-            Player player = Main.LocalPlayer;
-
-            int npcIndex = NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y, _digimonNpcType);
-            digimon = Main.npc[npcIndex].ModNPC as DigimonBase;
-
-            digimon.card = this;
-            digimon.NPC.friendly = true;
-            digimon.NPC.active = false;
+            int npcIndex = -1;
+            if (digivice != null)
+            {
+                Player player = digivice.FindPlayer();
+                npcIndex = NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y, _digimonNpcType);
+                digimon = Main.npc[npcIndex].ModNPC as DigimonBase;
+                digimon.card = this;
+                digimon.NPC.friendly = true;
+                digimon.NPC.active = true;
+                digimon.playerOwner = player;
+            }
+            else
+            {
+                npcIndex = NPC.NewNPC(null, 0, 0, _digimonNpcType);
+                digimon = Main.npc[npcIndex].ModNPC as DigimonBase;
+                digimon.card = this;
+                digimon.NPC.friendly = true;
+                digimon.NPC.active = false;
+                digimon.playerOwner = null;
+            }
+            
             return npcIndex;
         }
 

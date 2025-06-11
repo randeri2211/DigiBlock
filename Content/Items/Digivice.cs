@@ -6,9 +6,7 @@ using System;
 using Terraria.ModLoader.IO;
 using DigiBlock.Content.UI;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria.UI;
-using Microsoft.Xna.Framework;
+using DigiBlock.Content.Items.Digimon;
 
 
 namespace DigiBlock.Content.Items // Where is your code locates
@@ -18,7 +16,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
         // TODO: Needs to hold a digimon item
         public Item item = new Item();
         private string item_tag = "item";
-
+        
         public override void SetStaticDefaults()
         {
             Console.WriteLine("digivice created");
@@ -74,7 +72,21 @@ namespace DigiBlock.Content.Items // Where is your code locates
         public override void LoadData(TagCompound tag)
         {
             if (tag.ContainsKey(item_tag))
+            {
                 item = ItemIO.Load(tag.GetCompound(item_tag));
+                // Not in a chest
+                if (FindPlayer() == null)
+                {
+                    if (item.ModItem is DigimonCard card)
+                    {
+                        if (card.digimon.NPC.life > 0)
+                        {
+                            Console.WriteLine("initing");
+                            card.TryInitializeDigimon();
+                        }
+                    }
+                }
+            }
             else
             {
                 item = new Item();
@@ -110,7 +122,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
             return false;
         }
         
-        public Vector2 FindItemLocation()
+        public Player FindPlayer()
         {
             // Check players
             foreach (Player player in Main.player)
@@ -119,11 +131,11 @@ namespace DigiBlock.Content.Items // Where is your code locates
                 foreach (Item invItem in player.inventory)
                 {
                     if (invItem.ModItem == this)
-                        return player.Center;
+                        return player;
                 }
             }
 
-            return new Vector2(0, 0);
+            return null;
         }
     }
 }
