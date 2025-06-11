@@ -50,5 +50,10 @@ Mods: {
 		}
 
 		DamageClasses.DigitalDamage.DisplayName: Digital Damage
+
+		Keybinds: {
+			"Open Digimon UI.DisplayName": Open  Digimon  U I
+			"Toggle Evolution Graph.DisplayName": Toggle  Evolution  Graph
+		}
 	}
 }

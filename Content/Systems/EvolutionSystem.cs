@@ -15,7 +15,7 @@ namespace DigiBlock.Content.Systems
 {
     public class EvolutionSystem : ModSystem
     {
-        JsonDocument evolutions;
+        public JsonDocument evolutions;
         private List<EvolutionEffect> activeAnimations = new();
         public override void OnModLoad()
         {
@@ -32,6 +32,7 @@ namespace DigiBlock.Content.Systems
             {
                 mod.Logger.Error($"[JSON ERROR] {ex.Message}");
             }
+
         }
 
         public override void PreUpdateNPCs()

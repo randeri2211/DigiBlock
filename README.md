@@ -1,9 +1,9 @@
 # Digimon Mod Idea For Terraria
 
 ## Core Concepts
-- [x] Digimon damage type(<span style="color:red">Digital</span> damage)
+- [x] Digimon damage type(<span style="color:yellow">Digital</span> damage)
 - [x] Digimon will be fighting enemies aswell as other digimon
-- [ ] Dynamic evolution animation copying the Digimon Tamers evolution animation!
+- [x] Dynamic evolution animation copying the Digimon Tamers evolution animation!
 - [x] Digimon are items, spawned to the world through the digivice
 - [ ] Digimon have mana for special moves(Choose special move through the digivice)
 - [ ] Digimon have personalities that determine stat effects(too much like pokemon?)
