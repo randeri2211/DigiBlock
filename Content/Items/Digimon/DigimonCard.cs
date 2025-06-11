@@ -103,7 +103,7 @@ namespace DigiBlock.Content.Items.Digimon
             {
                 digimon.level = tag.GetInt("level");
                 digimon.maxEXP = DigiblockConstants.StartingEXP;
-                for (int i = 0; i < digimon.level; i++)
+                for (int i = 1; i < digimon.level; i++)
                 {
                     digimon.maxEXP = (int)(digimon.maxEXP * DigiblockConstants.LevelingEXPMultiplier);
                 }

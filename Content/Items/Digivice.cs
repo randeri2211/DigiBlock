@@ -79,7 +79,6 @@ namespace DigiBlock.Content.Items // Where is your code locates
                     {
                         if (card.digimon.NPC.life > 0)
                         {
-                            Console.WriteLine("initing");
                             card.TryInitializeDigimon();
                         }
                     }

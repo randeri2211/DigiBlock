@@ -35,7 +35,9 @@ namespace DigiBlock.Content.Digimon
         public Vector2 playerLocation;
         public float playerDistance;
         public bool justEvolved = false;
+        public bool evolving = false;
         public bool summoned = false;
+
         public Entity wildTarget = null;
         public int level = 16;
         public Evolutions evoStage;
@@ -49,7 +51,6 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetStaticDefaults()
         {
-
             Main.npcFrameCount[Type] = 25; // The total amount of frames the NPC has
 
             NPCID.Sets.ExtraFramesCount[Type] = 9; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs. This is the remaining frames after the walking frames.
@@ -116,6 +117,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void AI()
         {
+
             // Targeting
             if (wildTarget == null)
             {
@@ -174,7 +176,16 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        public int CalculateDamage(int damage, Attributes targetAttribute=Attributes.None)
+        public override void PostAI()
+        {
+            if (evolving)
+            {
+                NPC.velocity = new Vector2();
+            }
+            base.PostAI();
+        }
+
+        public int CalculateDamage(int damage, Attributes targetAttribute = Attributes.None)
         {
             // Increase based on attributes
             if ((attribute == Attributes.Data && targetAttribute == Attributes.Vaccine) || (attribute == Attributes.Virus && targetAttribute == Attributes.Data) || (attribute == Attributes.Vaccine && targetAttribute == Attributes.Virus))
@@ -303,11 +314,11 @@ namespace DigiBlock.Content.Digimon
                 currentEXP -= maxEXP;
                 level += 1;
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
-                agility += 1;
-                NPC.lifeMax += 5;
-                contactDamage += 1;
-                NPC.damage += 1;
-                NPC.defense += 1;
+                agility += DigiblockConstants.LevelUpBonus;
+                NPC.lifeMax += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
+                contactDamage += DigiblockConstants.LevelUpBonus;
+                NPC.damage += DigiblockConstants.LevelUpBonus;
+                NPC.defense += DigiblockConstants.LevelUpBonus;
                 CheckLevelUp();
             }
         }
