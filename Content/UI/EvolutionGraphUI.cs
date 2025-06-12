@@ -20,8 +20,8 @@ namespace DigiBlock.Content.UI
         private UIText label;
         private UITextBox searchTextBox;
         private bool textActive = false;
-        private static float panelWidth = 300f;
-        private static float panelHeight = 300f;
+        private float panelWidth = 200f;
+        private float panelHeight = 300f;
         Dictionary<ModNPC, JsonElement> evolutions;
         List<ModNPC> devolutions;
         ModNPC searchDigimon;
@@ -36,10 +36,13 @@ namespace DigiBlock.Content.UI
 
             label = new UIText("Digimon Evolution Graph");
             panel.Append(label);
+            panelWidth = Math.Max(label.GetDimensions().Width + panel.PaddingLeft + panel.PaddingRight, panelWidth);
+            panel.Width.Set(panelWidth, 0f);
+            
 
             searchTextBox = new UITextBox("");
             searchTextBox.SetPadding(5);
-            searchTextBox.Width.Set(0f, 0.7f);
+            searchTextBox.Width.Set(0f, 1f);
             searchTextBox.Top.Set(label.GetDimensions().Height + searchTextBox.PaddingTop, 0f);
             panel.Append(searchTextBox);
 
