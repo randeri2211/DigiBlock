@@ -37,7 +37,7 @@ namespace DigiBlock.Content.Systems
             int inventoryLayerIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
             if (inventoryLayerIndex != -1)
             {
-                layers.Insert(inventoryLayerIndex, new LegacyGameInterfaceLayer(
+                layers.Insert(inventoryLayerIndex , new LegacyGameInterfaceLayer(
                     "DigiBlock: Digimon UI",
                     () =>
                     {

@@ -11,11 +11,12 @@
 - [ ] Make an evolution graph to travel for evolutions maybe?(hold adjecency matrix to see both sides of evolution and devolution seperately and easily?)
 - [x] Digimon killing digimon or monsters gives exp to the digimon
 - [x] Digimon Attributes(Vaccine/Virus/Data/None)
+- [ ] 
 
 ## Accessories
 - [ ] Increase digimon max HP
 - [ ] Increase digimon max Mana
-- [ ] Increase <span style="color:red">Digital</span> damage
+- [ ] Increase <span style="color:yellow">Digital</span> damage
 - [ ] Increase digimon exp gain
 
 ## Items

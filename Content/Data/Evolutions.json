@@ -13,6 +13,12 @@
             "Conditions": {
                 "Level": 5
             }
+        },
+        {
+           "Evolution": "Greymon",
+            "Conditions": {
+                "Level": 16
+            } 
         }
     ]
 }

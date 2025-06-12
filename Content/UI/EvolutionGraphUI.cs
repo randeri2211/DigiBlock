@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 using DigiBlock.Content.Systems;
+using System.Text.Json;
+using Terraria.ModLoader.UI;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DigiBlock.Content.UI
 {
@@ -14,25 +17,30 @@ namespace DigiBlock.Content.UI
     {
         private HashSet<Keys> previousKeys = new();
         private UIPanel panel;
+        private UIText label;
         private UITextBox searchTextBox;
         private bool textActive = false;
+        private static float panelWidth = 300f;
+        private static float panelHeight = 300f;
+        Dictionary<ModNPC, JsonElement> evolutions;
+        List<ModNPC> devolutions;
+        ModNPC searchDigimon;
         public override void OnInitialize()
         {
             panel = new UIDraggablePanel();
             panel.SetPadding(10);
             panel.Left.Set(400f, 0f);
             panel.Top.Set(100f, 0f);
-            panel.Width.Set(300f, 0f);
-            panel.Height.Set(200f, 0f);
+            panel.Width.Set(panelWidth, 0f);
+            panel.Height.Set(panelHeight, 0f);
 
-            UIText label = new UIText("Digimon Evolution Graph");
+            label = new UIText("Digimon Evolution Graph");
             panel.Append(label);
 
             searchTextBox = new UITextBox("");
             searchTextBox.SetPadding(5);
             searchTextBox.Width.Set(0f, 0.7f);
-            searchTextBox.Height.Set(30f, 0f);
-            searchTextBox.Top.Set(25f, 0f);
+            searchTextBox.Top.Set(label.GetDimensions().Height + searchTextBox.PaddingTop, 0f);
             panel.Append(searchTextBox);
 
             Append(panel);
@@ -48,15 +56,148 @@ namespace DigiBlock.Content.UI
 
         private void SearchGraph(string digimonName)
         {
-            digimonName = digimonName.Length > 0 ? char.ToUpper(digimonName[0]) + digimonName.Substring(1).ToLower() : digimonName;
-            Console.WriteLine("searching for  " + digimonName);
+            Mod mod = ModContent.GetInstance<DigiBlock>();
+            string correctName = digimonName.Length > 0 ? char.ToUpper(digimonName[0]) + digimonName.Substring(1).ToLower() : digimonName;
+            Console.WriteLine("searching for  " + correctName);
             var allEvolutions = ModContent.GetInstance<EvolutionSystem>().evolutions;
-            foreach (var evolution in allEvolutions.RootElement.EnumerateObject())
+            Dictionary<ModNPC, JsonElement> tempEvolutions = new Dictionary<ModNPC, JsonElement>();
+            List<ModNPC> tempDevolutions = new List<ModNPC>();
+            if (allEvolutions.RootElement.TryGetProperty(correctName, out JsonElement digivolutions))
             {
-                Console.WriteLine("looking at  " + evolution.Name);
-                if (evolution.Name == digimonName)
+                searchDigimon = mod.Find<ModNPC>(correctName);
+                foreach (var digiv in digivolutions.EnumerateArray())
                 {
-                    Console.WriteLine("found evolution " + evolution.Name);
+                    Console.WriteLine("adding  " + digiv.GetProperty("Evolution").GetString());
+                    tempEvolutions.Add(mod.Find<ModNPC>(digiv.GetProperty("Evolution").GetString()), digiv.GetProperty("Conditions"));
+                    Console.WriteLine("added");
+                }
+            }
+            foreach (var digimon in allEvolutions.RootElement.EnumerateObject())
+            {
+                foreach (var digiv in digimon.Value.EnumerateArray())
+                {
+                    if (digiv.GetProperty("Evolution").GetString() == correctName)
+                    {
+                        if (searchDigimon == null)
+                        {
+                            searchDigimon = mod.Find<ModNPC>(correctName);
+                        }
+                        Console.WriteLine("adding  devolution " + digimon.Name);
+                        tempDevolutions.Add(mod.Find<ModNPC>(digimon.Name));
+                        Console.WriteLine("added");
+                    }
+                }
+            }
+
+            if (tempEvolutions.Count > 0)
+            {
+                Console.WriteLine("swapping evolutions");
+                evolutions = tempEvolutions;
+            }
+            else
+            {
+                evolutions = null;
+            }
+            if (tempDevolutions.Count > 0)
+            {
+                Console.WriteLine("swapping devolutions");
+                devolutions = tempDevolutions;
+            }
+            else
+            {
+                devolutions = null;
+            }
+
+            TriggerGraphDraw();
+            searchDigimon = null;
+        }
+
+        private void TriggerGraphDraw()
+        {
+            float offsetY = label.GetDimensions().Height + searchTextBox.GetDimensions().Height;
+            float digimonHeight = (panelHeight - offsetY) / 3;
+            // Clear graph
+            if ((evolutions != null && evolutions.Count > 0) || (devolutions != null && devolutions.Count > 0))
+            {
+                List<UIElement> toRemove = new List<UIElement>();
+                foreach (var element in panel.Children)
+                {
+                    if (element is CroppedUIImageButton e)
+                    {
+                        toRemove.Add(e);
+                    }
+                }
+                foreach (UIElement element in toRemove)
+                {
+                    Console.WriteLine("removing");
+                    panel.RemoveChild(element);
+                }
+
+            }
+            if (evolutions != null && evolutions.Count > 0)
+            {
+                float digimonWidth = panelWidth / evolutions.Count;
+                int counter = 0;
+                foreach (var evo in evolutions.Keys)
+                {
+                    Console.WriteLine("evolution"+evo.Name);
+                    var textureBase = ModContent.Request<Texture2D>(evo.Texture);
+                    CroppedUIImageButton evoButton = new CroppedUIImageButton(textureBase, evo.NPC.width, evo.NPC.height, evolutions[evo]);
+
+                    // evoButton.Width.Set(digimonWidth, 0f);
+                    float textureWidth = textureBase.Width();
+                    evoButton.Width.Set(textureWidth, 0f);
+                    evoButton.Height.Set(digimonHeight, 0f);
+                    evoButton.Top.Set(offsetY, 0f);
+                    evoButton.Left.Set(- textureWidth / 2, (1+counter)/(1.0f+evolutions.Count));
+
+                    evoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+                    {
+                        SearchGraph(evo.Name);
+                    };
+
+                    panel.Append(evoButton);
+                    counter++;
+                }
+
+            }
+            if (searchDigimon != null)
+            {
+                var digimonTexture = ModContent.Request<Texture2D>(searchDigimon.Texture);
+                CroppedUIImageButton digimonButton = new CroppedUIImageButton(digimonTexture, searchDigimon.NPC.width, searchDigimon.NPC.height);
+                float dtextureWidth = digimonTexture.Width();
+                digimonButton.Width.Set(dtextureWidth, 0f);
+                digimonButton.Height.Set(digimonHeight, 0f);
+                digimonButton.Top.Set(offsetY + digimonHeight, 0f);
+                digimonButton.Left.Set(-dtextureWidth / 2, 0.5f);
+                panel.Append(digimonButton);
+            }
+            
+
+            if (devolutions != null && devolutions.Count > 0)
+            {
+                float digimonWidth = panelWidth / devolutions.Count;
+                int counter = 0;
+                foreach (var devo in devolutions)
+                {
+                    Console.WriteLine("devolution" + devo.Name);
+                    var textureBase = ModContent.Request<Texture2D>(devo.Texture);
+                    CroppedUIImageButton devoButton = new CroppedUIImageButton(textureBase, devo.NPC.width, devo.NPC.height);
+                    float textureWidth = textureBase.Width();
+
+                    // evoButton.Width.Set(digimonWidth, 0f);
+                    devoButton.Width.Set(textureWidth, 0f);
+                    devoButton.Height.Set(digimonHeight, 0f);
+                    devoButton.Top.Set(offsetY + 2 * digimonHeight, 0f);
+                    devoButton.Left.Set(- textureWidth / 2, (1+counter)/(1.0f+devolutions.Count));
+
+                    devoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+                    {
+                        SearchGraph(devo.Name);
+                    };
+
+                    panel.Append(devoButton);
+                    counter++;
                 }
             }
         }
