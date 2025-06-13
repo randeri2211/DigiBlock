@@ -9,17 +9,16 @@ using System.Collections.Generic;
 using DigiBlock.Content.Items.Digimon;
 
 
-namespace DigiBlock.Content.Items // Where is your code locates
+namespace DigiBlock.Content.Items
 {
     public class Digivice : ModItem
     {
-        // TODO: Needs to hold a digimon item
         public Item item = new Item();
         private string item_tag = "item";
 
         public override void SetStaticDefaults()
         {
-            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; // How many items need for research in Journey Mode
+            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; 
         }
 
         public override void SetDefaults()
@@ -95,7 +94,6 @@ namespace DigiBlock.Content.Items // Where is your code locates
         {
             base.ModifyTooltips(tooltips);
             var digimonData = item.Name;
-            // TODO:Add more digimon data on display
 
             var line = new TooltipLine(Mod, "Digivice Digimon", digimonData);
             tooltips.Add(line);

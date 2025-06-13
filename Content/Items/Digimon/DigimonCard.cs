@@ -43,7 +43,6 @@ namespace DigiBlock.Content.Items.Digimon
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            // TODO:Add more digimon data on display
             if (digimon != null)
             {
                 Mod mod = ModContent.GetInstance<DigiBlock>();
@@ -53,7 +52,7 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
                 tooltips.Add(new TooltipLine(Mod, "DigimonEXP", "Exp: " + digimon.getEXP() + "/" + digimon.maxEXP));
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.contactDamage))); //TODO:Change for an ability damage
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.contactDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.CalculateDamage(digimon.specialDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
                 tooltips.Add(new TooltipLine(Mod, "DigimonDefense", "Defense: " + digimon.NPC.defense));

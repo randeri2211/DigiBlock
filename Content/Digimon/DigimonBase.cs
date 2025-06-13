@@ -39,17 +39,17 @@ namespace DigiBlock.Content.Digimon
         public bool summoned = false;
 
         public Entity wildTarget = null;
-        public int level = 16;
-        public Evolutions evoStage;
-        public int maxHP;
-        private int currentEXP = 0;
-        public int maxEXP = DigiblockConstants.StartingEXP;
+
         // Stats
-        // HP and maxHP are already implemented as NPC.life and NPC.lifeMax
         public int contactDamage;
         public int specialDamage;
         public int agility;
         public int defense;
+        public int maxHP;
+        private int currentEXP = 0;
+        public int maxEXP = DigiblockConstants.StartingEXP;
+        public int level = 16;
+        public Evolutions evoStage;
 
         public override void SetStaticDefaults()
         {

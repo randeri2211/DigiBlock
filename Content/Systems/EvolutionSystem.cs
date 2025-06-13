@@ -168,7 +168,6 @@ namespace DigiBlock.Content.Systems
             NPC npc = digimon.NPC;
 
             int etype = evolvedInstance.Type;
-            //TODO: Add evolution animation here
 
             Vector2 pos = npc.Center;
             int newNpcId = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, etype);
