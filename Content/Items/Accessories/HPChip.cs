@@ -6,17 +6,19 @@ using System.Collections.Generic;
 
 namespace DigiBlock.Content.Items.Accessories
 {
-    public class EXP : ModItem
+    public class HPChip : ModItem
     {
         public override void SetStaticDefaults()
         {
+            
         }
 
         public override void SetDefaults()
         {
+            Item.SetNameOverride("HP Chip");
             Item.accessory = true;
-            Item.width = 20;
-            Item.height = 20;
+            Item.width = 31;
+            Item.height = 31;
             Item.value = Item.sellPrice(silver: 50);
             Item.rare = ItemRarityID.Green;
         }
@@ -24,12 +26,12 @@ namespace DigiBlock.Content.Items.Accessories
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             // Access the custom ModPlayer and modify stats
-            player.GetModPlayer<DigiBlockPlayer>().digimonMaxEXPPercent += 0.1f;
+            player.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent += 0.1f;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "HPChip", "Increases your Digimon EXP gain by 10%"));
+            tooltips.Add(new TooltipLine(Mod, "HPChip", "Increases your Digimon MaxHP by 10%"));
         }
     }
 }

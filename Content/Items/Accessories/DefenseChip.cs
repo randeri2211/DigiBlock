@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DigiBlock.Content.Items.Accessories
 {
-    public class DEFENSE : ModItem
+    public class DefenseChip : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -15,8 +15,8 @@ namespace DigiBlock.Content.Items.Accessories
         public override void SetDefaults()
         {
             Item.accessory = true;
-            Item.width = 20;
-            Item.height = 20;
+            Item.width = 31;
+            Item.height = 31;
             Item.value = Item.sellPrice(silver: 50);
             Item.rare = ItemRarityID.Green;
         }

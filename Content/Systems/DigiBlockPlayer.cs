@@ -22,6 +22,8 @@ namespace DigiBlock.Content.Systems
         public override void ResetEffects()
         {
             digimonMaxHPPercent = 1f;
+            digimonDefensePercent = 1f;
+            digimonEXPPercent = 1f;
         }
 
 

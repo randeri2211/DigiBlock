@@ -30,6 +30,31 @@ Mods: {
 				DisplayName: M A X H P
 				Tooltip: ""
 			}
+
+			DEFENSE: {
+				DisplayName: D E F E N S E
+				Tooltip: ""
+			}
+
+			EXP: {
+				DisplayName: E X P
+				Tooltip: ""
+			}
+
+			DefenseChip: {
+				DisplayName: Defense Chip
+				Tooltip: ""
+			}
+
+			EXPChip: {
+				DisplayName: E X P Chip
+				Tooltip: ""
+			}
+
+			HPChip: {
+				DisplayName: H P Chip
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {
