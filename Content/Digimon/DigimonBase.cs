@@ -98,6 +98,7 @@ namespace DigiBlock.Content.Digimon
             defense = digimon.defense;
             currentEXP = digimon.currentEXP;
             maxEXP = digimon.maxEXP;
+            maxHP = digimon.maxHP;
             NPC.active = digimon.NPC.active;
             playerOwner = digimon.playerOwner;
         }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.ID;
 using DigiBlock.Common;
 using Microsoft.Xna.Framework;
+using System;
 
 
 namespace DigiBlock.Content.Items.Digimon
@@ -34,6 +35,10 @@ namespace DigiBlock.Content.Items.Digimon
             Item.height = 23;
             Item.maxStack = 1;
             Item.rare = ItemRarityID.Blue;
+            if (_digimonNpcType > 0 && digimon == null)
+            {
+                setDigimonNpcType(_digimonNpcType); // Will call TryInitializeDigimon
+            }
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)

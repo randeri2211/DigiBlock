@@ -20,11 +20,14 @@ namespace DigiBlock.Content.Digimon
         {
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
+            if (contactDamage == 0)
+            {
+                contactDamage = 20;
+                agility = 25;
+                maxHP = 15;
+            }
             NPC.width = 32;
             NPC.height = 32;
-            contactDamage = 20;
-            agility = 25;
-            maxHP = 15;
             base.SetDefaults();
         }
     }
