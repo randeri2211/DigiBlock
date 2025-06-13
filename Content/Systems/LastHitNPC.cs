@@ -25,7 +25,7 @@ namespace DigiBlock.Content.Systems
                     // Non digimon exp scales with hardmode
                     expAmount = (Main.hardMode ? 2 : 1) * 10;
                 }
-                victim.lastHitByDigimon.GiveEXP(expAmount);
+                victim.lastHitByDigimon.GiveEXP((int)(expAmount * victim.lastHitByDigimon.playerOwner.GetModPlayer<DigiBlockPlayer>().digimonEXPPercent));
             }
         }
     }

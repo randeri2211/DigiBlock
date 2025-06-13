@@ -17,6 +17,7 @@ namespace DigiBlock.Content.Systems
     {
         public float digimonMaxHPPercent;
         public float digimonDefensePercent;
+        public float digimonEXPPercent;
 
         public override void ResetEffects()
         {

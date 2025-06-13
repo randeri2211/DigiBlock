@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DigiBlock.Content.Items.Accessories
 {
-    public class MAXHP : ModItem
+    public class DEFENSE : ModItem
     {
         public override void SetStaticDefaults()
         {
@@ -24,12 +24,12 @@ namespace DigiBlock.Content.Items.Accessories
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             // Access the custom ModPlayer and modify stats
-            player.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent += 0.1f;
+            player.GetModPlayer<DigiBlockPlayer>().digimonDefensePercent += 0.1f;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "HPChip", "Increases your Digimon MaxHP by 10%"));
+            tooltips.Add(new TooltipLine(Mod, "HPChip", "Increases your Digimon Defense by 10%"));
         }
     }
 }
