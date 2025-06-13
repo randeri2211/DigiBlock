@@ -73,8 +73,8 @@ namespace DigiBlock.Content.Items // Where is your code locates
             {
                 item = ItemIO.Load(tag.GetCompound(item_tag));
                 // Not in a chest
-                if (FindPlayer() == null)
-                {
+                // if (FindPlayer() == null)
+                // {
                     if (item.ModItem is DigimonCard card)
                     {
                         if (card.digimon.NPC.life > 0)
@@ -82,7 +82,7 @@ namespace DigiBlock.Content.Items // Where is your code locates
                             card.TryInitializeDigimon();
                         }
                     }
-                }
+                // }
             }
             else
             {

@@ -196,6 +196,7 @@ namespace DigiBlock.Content.Digimon
 
         public void CalculateStats()
         {
+            Console.WriteLine("calculating stats" + maxHP + "," + defense);
             if (playerOwner != null)
             {
                 NPC.lifeMax = (int)(maxHP * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent);

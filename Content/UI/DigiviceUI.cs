@@ -54,6 +54,7 @@ namespace DigiBlock.Content.UI
                 text += "Contact Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.contactDamage) + "\n";
                 text += "Special Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.specialDamage) + "\n";
                 text += "Agility: " + digimonCard.digimon.agility + "\n";
+                text += "Defense: " + digimonCard.digimon.NPC.defense + "\n";
                 text += "Digimon Type: " + digimonCard.digimon.Name + "\n";
                 text += "Digimon Attribute: " + digimonCard.digimon.attribute + "\n";
                 UIText dataUI = new UIText(text);

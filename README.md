@@ -14,10 +14,11 @@
 - [ ] 
 
 ## Accessories
-- [ ] Increase digimon max HP
+- [x] Increase digimon max HP
 - [ ] Increase digimon max Mana
 - [ ] Increase <span style="color:yellow">Digital</span> damage
-- [ ] Increase digimon exp gain
+- [x] Increase digimon exp gain
+- [x] Increase digimon defense
 
 ## Items
 - [x] Digivices

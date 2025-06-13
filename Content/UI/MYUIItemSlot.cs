@@ -51,46 +51,47 @@ namespace DigiBlock.Content.UI
                     // Case: Removed
                     if (!wasAir && isAir)
                     {
-                        DigimonCard c = item.ModItem as DigimonCard;
-                        c.digimon.NPC.active = false;
-                        c.digivice = null;
+                        removeCard(item);
                     }
                     // Case: Inserted
                     else if (wasAir && !isAir)
                     {
-                        DigimonCard c = digivice.item.ModItem as DigimonCard;
-                        Player player = Main.LocalPlayer;
-                        int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c.digimon.Type);
-                        if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
-                        {
-                            digiNPC.copyData(c.digimon);
-                            digiNPC.NPC.active = true;
-                            c.digimon = digiNPC;
-                            c.digivice = digivice;
-                        }
+                        addCard();
                     }
                     // Case: Swapped
                     else if (!wasAir && !isAir)
                     {
-                        DigimonCard c1 = item.ModItem as DigimonCard;
-                        c1.digimon.NPC.active = false;
-                        c1.digivice = null;
-                        DigimonCard c2 = digivice.item.ModItem as DigimonCard;
-                        Player player = Main.LocalPlayer;//TODO:Change to check the player
-                        int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c2.digimon.Type);
-                        if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
-                        {
-                            digiNPC.copyData(c2.digimon);
-                            digiNPC.NPC.active = true;
-                            c2.digimon = digiNPC;
-                        }
-                        c2.digivice = digivice;
+                        removeCard(item);
+                        addCard().digivice = digivice;
                     }
                     item = digivice.item;
                 }
             }
 
             ItemSlot.Draw(spriteBatch, ref digivice.item, ItemSlot.Context.ShopItem, dimensions.Position());
+        }
+
+        public void removeCard(Item item)
+        {
+            DigimonCard c = item.ModItem as DigimonCard;
+            c.digimon.NPC.active = false;
+            c.digivice = null;
+        }
+
+        public DigimonCard addCard()
+        {
+            DigimonCard c = digivice.item.ModItem as DigimonCard;
+            Player player = Main.LocalPlayer;
+            int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c.digimon.Type);
+            if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
+            {
+                digiNPC.copyData(c.digimon);
+                digiNPC.NPC.active = true;
+                c.digimon = digiNPC;
+                c.digivice = digivice;
+                c.digimon.CalculateStats();
+            }
+            return c;
         }
     }
 }
