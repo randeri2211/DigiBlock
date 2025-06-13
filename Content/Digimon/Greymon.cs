@@ -24,7 +24,7 @@ namespace DigiBlock.Content.Digimon
             NPC.height = 32;
             contactDamage = 20;
             agility = 25;
-            NPC.lifeMax = 15;
+            maxHP = 15;
             base.SetDefaults();
         }
     }

@@ -25,6 +25,11 @@ Mods: {
 				DisplayName: Digimon Card
 				Tooltip: ""
 			}
+
+			MAXHP: {
+				DisplayName: M A X H P
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {

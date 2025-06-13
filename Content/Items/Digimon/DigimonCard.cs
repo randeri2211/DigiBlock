@@ -51,6 +51,7 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.contactDamage))); //TODO:Change for an ability damage
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.CalculateDamage(digimon.specialDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
+                tooltips.Add(new TooltipLine(Mod, "DigimonDefense", "Defense: " + digimon.NPC.defense));
                 tooltips.Add(new TooltipLine(Mod, "DigimonType", "Digimon Type: " + digimon.Name));
                 TooltipLine attributeTooltip = new TooltipLine(Mod, "DigimonAttribute", "Digimon Attribute: " + digimon.attribute);
                 switch (digimon.attribute)
@@ -78,7 +79,8 @@ namespace DigiBlock.Content.Items.Digimon
             tag["level"] = digimon.level;
             tag["exp"] = digimon.getEXP();
             tag["currentHP"] = digimon.NPC.life;
-            tag["maxHP"] = digimon.NPC.lifeMax;
+            tag["maxHP"] = digimon.maxHP;
+            tag["defense"] = digimon.defense;
         }
 
         public override void LoadData(Terraria.ModLoader.IO.TagCompound tag)
@@ -117,8 +119,12 @@ namespace DigiBlock.Content.Items.Digimon
                 digimon.NPC.life = tag.GetInt("currentHP");
             }
             if (tag.ContainsKey("maxHP"))
+            {
+                digimon.maxHP = tag.GetInt("maxHP");
+            }
+            if (tag.ContainsKey("defense"))
             { 
-                digimon.NPC.lifeMax = tag.GetInt("maxHP");
+                digimon.defense = tag.GetInt("defense");
             }
         }
 
@@ -147,6 +153,7 @@ namespace DigiBlock.Content.Items.Digimon
                 digimon.NPC.friendly = true;
                 digimon.NPC.active = true;
                 digimon.playerOwner = player;
+                digimon.CalculateStats();
             }
             else
             {

@@ -178,9 +178,11 @@ namespace DigiBlock.Content.Systems
                 digimon.card.digimon = evolvedNPC;
                 digimon.card.setDigimonNpcType(etype, false);
                 evolvedNPC.copyData(digimon);
-                evolvedNPC.NPC.lifeMax += DigiblockConstants.EvolutionBonus;
-                evolvedNPC.NPC.damage += DigiblockConstants.EvolutionBonus;
+                evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus;
                 evolvedNPC.contactDamage += DigiblockConstants.EvolutionBonus;
+                evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus;
+                evolvedNPC.defense += DigiblockConstants.EvolutionBonus;
+                evolvedNPC.CalculateStats();
                 mod.Logger.Debug("Into " + digimon.card.digimon.name);
             }
             digimon.justEvolved = true;

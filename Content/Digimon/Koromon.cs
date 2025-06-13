@@ -23,7 +23,7 @@ namespace DigiBlock.Content.Digimon
             agility = 5;
             NPC.width = 23;
             NPC.height = 12;
-            NPC.lifeMax = 10;
+            maxHP = 10;
             AnimationType = NPCID.Guide;
             base.SetDefaults();
         }

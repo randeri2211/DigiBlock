@@ -16,14 +16,14 @@ namespace DigiBlock.Content.UI
     public class MYUIItemSlot : UIElement
     {
         public Digivice digivice;
-        private Item previousItem = new Item(); // starts as "air"
+        public Item item = new Item(); // starts as "air"
 
         public MYUIItemSlot(Digivice digivice)
         {
             this.digivice = digivice;
             Width.Set(50f, 0f);
             Height.Set(50f, 0f);
-            this.previousItem = digivice.item;
+            this.item = digivice.item;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -42,16 +42,16 @@ namespace DigiBlock.Content.UI
                 ItemSlot.LeftClick(ref digivice.item, ItemSlot.Context.InventoryItem);
                 ItemSlot.RightClick(ref digivice.item, ItemSlot.Context.InventoryItem);
 
-                bool wasAir = previousItem.IsAir;
+                bool wasAir = item.IsAir;
                 bool isAir = digivice.item.IsAir;
 
                 // Now compare with previous state
-                if (!Item.Equals(previousItem, digivice.item))
+                if (!Item.Equals(item, digivice.item))
                 {
                     // Case: Removed
                     if (!wasAir && isAir)
                     {
-                        DigimonCard c = previousItem.ModItem as DigimonCard;
+                        DigimonCard c = item.ModItem as DigimonCard;
                         c.digimon.NPC.active = false;
                         c.digivice = null;
                     }
@@ -72,7 +72,7 @@ namespace DigiBlock.Content.UI
                     // Case: Swapped
                     else if (!wasAir && !isAir)
                     {
-                        DigimonCard c1 = previousItem.ModItem as DigimonCard;
+                        DigimonCard c1 = item.ModItem as DigimonCard;
                         c1.digimon.NPC.active = false;
                         c1.digivice = null;
                         DigimonCard c2 = digivice.item.ModItem as DigimonCard;
@@ -86,7 +86,7 @@ namespace DigiBlock.Content.UI
                         }
                         c2.digivice = digivice;
                     }
-                    previousItem = digivice.item;
+                    item = digivice.item;
                 }
             }
 

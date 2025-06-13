@@ -41,6 +41,7 @@ namespace DigiBlock.Content.Digimon
         public Entity wildTarget = null;
         public int level = 16;
         public Evolutions evoStage;
+        public int maxHP;
         private int currentEXP = 0;
         public int maxEXP = DigiblockConstants.StartingEXP;
         // Stats
@@ -48,6 +49,7 @@ namespace DigiBlock.Content.Digimon
         public int contactDamage;
         public int specialDamage;
         public int agility;
+        public int defense;
 
         public override void SetStaticDefaults()
         {
@@ -76,7 +78,8 @@ namespace DigiBlock.Content.Digimon
         {
             name = Name;
             NPC.damage = contactDamage;
-
+            NPC.lifeMax = maxHP;
+            NPC.defense = defense;
             NPC.friendly = false; // Wild digimon by default
         }
 
@@ -90,7 +93,13 @@ namespace DigiBlock.Content.Digimon
             NPC.life = digimon.NPC.life;
             NPC.damage = digimon.NPC.damage;
             contactDamage = digimon.contactDamage;
+            specialDamage = digimon.specialDamage;
+            NPC.defense = digimon.NPC.defense;
+            defense = digimon.defense;
+            currentEXP = digimon.currentEXP;
+            maxEXP = digimon.maxEXP;
             NPC.active = digimon.NPC.active;
+            playerOwner = digimon.playerOwner;
         }
 
         public override void OnKill()
@@ -185,6 +194,22 @@ namespace DigiBlock.Content.Digimon
             base.PostAI();
         }
 
+        public void CalculateStats()
+        {
+            if (playerOwner != null)
+            {
+                NPC.lifeMax = (int)(maxHP * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent);
+
+                NPC.defense = (int)(defense * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonDefensePercent);
+            }
+            else
+            {
+                NPC.lifeMax = maxHP;
+                NPC.defense = defense;
+            }
+            
+        }
+
         public int CalculateDamage(int damage, Attributes targetAttribute = Attributes.None)
         {
             // Increase based on attributes
@@ -212,6 +237,7 @@ namespace DigiBlock.Content.Digimon
             if (playerOwner == null)
             {
                 playerOwner = card.digivice.FindPlayer();
+                CalculateStats();
             }
 
             playerLocation = playerOwner.Center;
@@ -315,9 +341,9 @@ namespace DigiBlock.Content.Digimon
                 level += 1;
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
                 agility += DigiblockConstants.LevelUpBonus;
-                NPC.lifeMax += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
+                maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
                 contactDamage += DigiblockConstants.LevelUpBonus;
-                NPC.damage += DigiblockConstants.LevelUpBonus;
+                specialDamage += DigiblockConstants.LevelUpBonus;
                 NPC.defense += DigiblockConstants.LevelUpBonus;
                 CheckLevelUp();
             }

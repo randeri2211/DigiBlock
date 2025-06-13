@@ -2,6 +2,7 @@ using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
+using System;
 
 namespace DigiBlock.Content.UI
 {
@@ -32,8 +33,28 @@ namespace DigiBlock.Content.UI
             if (dragging)
             {
                 Vector2 mouse = UserInterface.ActiveInstance.MousePosition;
-                Left.Set(mouse.X - offset.X, 0f);
-                Top.Set(mouse.Y - offset.Y, 0f);
+                if (mouse.X - offset.X < 0)
+                {
+                    Left.Set(0, 0f);
+                } else if (mouse.X - offset.X >= Parent.GetDimensions().Width - Width.Pixels) {
+                    Left.Set(Parent.GetDimensions().Width - Width.Pixels, 0f);
+                } else {
+                    Left.Set(mouse.X - offset.X, 0f);
+                }
+
+                if (mouse.Y - offset.Y <= 0)
+                {
+                    Top.Set(0, 0f);
+                }
+                else if (mouse.Y - offset.Y >= Parent.GetDimensions().Height - Height.Pixels)
+                {
+                    Top.Set(Parent.GetDimensions().Height - Height.Pixels, 0f);
+                }
+                else
+                {
+                    Top.Set(mouse.Y - offset.Y, 0f);
+                }
+
                 Recalculate();
             }
         }
