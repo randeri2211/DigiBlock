@@ -3,7 +3,7 @@ using Terraria.UI;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
-using DigiBlock.Content.Items;
+using DigiBlock.Content.Items.Digimon;
 
 namespace DigiBlock.Content.UI
 {

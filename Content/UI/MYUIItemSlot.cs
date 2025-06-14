@@ -2,14 +2,10 @@ using Terraria;
 using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
-using DigiBlock.Content.Items;
 using System;
-using Terraria.GameContent.UI.Elements;
 using DigiBlock.Content.Items.Digimon;
 using Terraria.ID;
 using DigiBlock.Content.Digimon;
-using DigiBlock.Common;
 
 namespace DigiBlock.Content.UI
 {
@@ -76,7 +72,6 @@ namespace DigiBlock.Content.UI
             DigimonCard c = item.ModItem as DigimonCard;
             c.digimon.NPC.active = false;
             c.digivice = null;
-            Console.WriteLine("hp removed " + c.digimon.maxHP);
         }
 
         public DigimonCard addCard()
@@ -91,7 +86,6 @@ namespace DigiBlock.Content.UI
                 c.digimon = digiNPC;
                 c.digivice = digivice;
                 c.digimon.CalculateStats();
-                Console.WriteLine("hp added " + c.digimon.maxHP);
             }
             return c;
         }

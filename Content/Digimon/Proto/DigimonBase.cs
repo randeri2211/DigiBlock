@@ -7,6 +7,8 @@ using DigiBlock.Common;
 using DigiBlock.Content.Items.Digimon;
 using DigiBlock.Content.Damage;
 using DigiBlock.Content.Systems;
+using System.Collections.Generic;
+
 
 namespace DigiBlock.Content.Digimon
 {
@@ -50,6 +52,7 @@ namespace DigiBlock.Content.Digimon
         public int maxEXP = DigiblockConstants.StartingEXP;
         public int level = 16;
         public Evolutions evoStage;
+        public Dictionary<DigimonSpawnBiome, int> biomeKills = new Dictionary<DigimonSpawnBiome,int>();
 
         public override void SetStaticDefaults()
         {
@@ -197,7 +200,6 @@ namespace DigiBlock.Content.Digimon
 
         public void CalculateStats()
         {
-            Console.WriteLine("calculating stats" + maxHP + "," + defense);
             if (playerOwner != null)
             {
                 NPC.lifeMax = (int)(maxHP * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent);
@@ -209,7 +211,7 @@ namespace DigiBlock.Content.Digimon
                 NPC.lifeMax = maxHP;
                 NPC.defense = defense;
             }
-            
+
         }
 
         public int CalculateDamage(int damage, Attributes targetAttribute = Attributes.None)
@@ -374,7 +376,8 @@ namespace DigiBlock.Content.Digimon
                         if (target.immune[NPC.whoAmI] <= 0)
                         {
                             Attributes targetAttribute = Attributes.None;
-                            if (target.ModNPC is DigimonBase targetDigimon) {
+                            if (target.ModNPC is DigimonBase targetDigimon)
+                            {
                                 targetAttribute = targetDigimon.attribute;
                             }
                             // Apply contact damage manually
@@ -397,7 +400,7 @@ namespace DigiBlock.Content.Digimon
                             }
 
                             // Store this Digimon in the target's GlobalNPC
-                            if (target.TryGetGlobalNPC(out LastHitNPC victim))
+                            if (target.TryGetGlobalNPC(out DigiBlockNPC victim))
                             {
                                 victim.lastHitByDigimon = this;
                             }

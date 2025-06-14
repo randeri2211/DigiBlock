@@ -6,10 +6,9 @@ using System;
 using Terraria.ModLoader.IO;
 using DigiBlock.Content.UI;
 using System.Collections.Generic;
-using DigiBlock.Content.Items.Digimon;
 
 
-namespace DigiBlock.Content.Items
+namespace DigiBlock.Content.Items.Digimon
 {
     public class Digivice : ModItem
     {

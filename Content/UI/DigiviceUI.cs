@@ -1,7 +1,6 @@
 using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
-using DigiBlock.Content.Items;
 using System;
 using Terraria;
 using DigiBlock.Content.Items.Digimon;
@@ -57,6 +56,10 @@ namespace DigiBlock.Content.UI
                 text += "Defense: " + digimonCard.digimon.NPC.defense + "\n";
                 text += "Digimon Type: " + digimonCard.digimon.Name + "\n";
                 text += "Digimon Attribute: " + digimonCard.digimon.attribute + "\n";
+                foreach (var biome in digimonCard.digimon.biomeKills.Keys)
+                {
+                    text += biome + ": " + digimonCard.digimon.biomeKills[biome] + "\n";
+                }
                 UIText dataUI = new UIText(text);
                 dataUI.Top.Set(itemSlot.GetDimensions().Height + itemSlot.Top.Pixels, 0f);
                 // Console.WriteLine("height " + dataUI.GetInnerDimensions().Height + "percent" + dataUI.Height.Percent);

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Terraria.ID;
 using DigiBlock.Common;
 using Microsoft.Xna.Framework;
-using System;
 
 
 namespace DigiBlock.Content.Items.Digimon
@@ -85,6 +84,7 @@ namespace DigiBlock.Content.Items.Digimon
             tag["currentHP"] = digimon.NPC.life;
             tag["maxHP"] = digimon.maxHP;
             tag["defense"] = digimon.defense;
+            // tag["biomeKills"] = digimon.biomeKills;
         }
 
         public override void LoadData(Terraria.ModLoader.IO.TagCompound tag)
@@ -127,8 +127,12 @@ namespace DigiBlock.Content.Items.Digimon
                 digimon.maxHP = tag.GetInt("maxHP");
             }
             if (tag.ContainsKey("defense"))
-            { 
+            {
                 digimon.defense = tag.GetInt("defense");
+            }
+            if (tag.ContainsKey("biomeKills"))
+            {
+                // digimon.biomeKills = tag.Get("");
             }
         }
 
