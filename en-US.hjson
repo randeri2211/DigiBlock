@@ -55,6 +55,16 @@ Mods: {
 				DisplayName: H P Chip
 				Tooltip: ""
 			}
+
+			DamageChip: {
+				DisplayName: Damage Chip
+				Tooltip: ""
+			}
+
+			OmegaChip: {
+				DisplayName: Omega Chip
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {

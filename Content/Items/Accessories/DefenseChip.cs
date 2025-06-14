@@ -29,7 +29,7 @@ namespace DigiBlock.Content.Items.Accessories
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "HPChip", "Increases your Digimon Defense by 10%"));
+            tooltips.Add(new TooltipLine(Mod, "DefenseChip", "Increases your Digimon Defense by 10%"));
         }
     }
 }
