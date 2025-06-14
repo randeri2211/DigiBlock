@@ -16,11 +16,8 @@ namespace DigiBlock.Content.Digimon
             base.SetDefaults();
         }
 
-        public override void AI()
+        public override void Move()
         {
-            //Targeting and contact damage
-            base.AI();
-
             if (wildTarget != null && wildTarget.active)
             {
                 float moveSpeed = agility * DigiblockConstants.AgilityMoveSpeedMultiplier + 5; // walking speed

@@ -39,9 +39,7 @@ namespace DigiBlock.Content.Items.Digimon
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            // recipe.AddIngredient<SteelShard>(7); // We are using custom material for the craft, 7 Steel Shards
-            // recipe.AddIngredient(ItemID.Wood, 3); // Also, we are using vanilla material to craft, 3 Wood
-            // recipe.AddTile(TileID.Anvils); // Crafting station we need for craft, WorkBenches, Anvils etc. You can find them here - https://terraria.wiki.gg/wiki/Tile_IDs
+            // TODO: Come up with a recipe
             recipe.Register();
         }
 
@@ -70,17 +68,6 @@ namespace DigiBlock.Content.Items.Digimon
             if (tag.ContainsKey(item_tag))
             {
                 item = ItemIO.Load(tag.GetCompound(item_tag));
-                // Not in a chest
-                // if (FindPlayer() == null)
-                // {
-                    if (item.ModItem is DigimonCard card)
-                    {
-                        if (card.digimon.NPC.life > 0)
-                        {
-                            card.TryInitializeDigimon();
-                        }
-                    }
-                // }
             }
             else
             {

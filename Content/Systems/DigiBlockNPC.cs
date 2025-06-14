@@ -32,8 +32,12 @@ namespace DigiBlock.Content.Systems
         public override bool InstancePerEntity => true;
         public override void OnKill(NPC npc)
         {
-            if (npc.TryGetGlobalNPC(out DigiBlockNPC victim) && victim.lastHitByDigimon != null)
+            DigiBlockNPC victim = npc.GetGlobalNPC<DigiBlockNPC>();
+
+            // Killed by tamed digimon
+            if (victim.lastHitByDigimon != null)
             {
+                // Handle Exp
                 int expAmount = 0;
                 if (npc.ModNPC is DigimonBase digimon)
                 {
@@ -45,16 +49,20 @@ namespace DigiBlock.Content.Systems
                     // Non digimon exp scales with hardmode
                     expAmount = (Main.hardMode ? 2 : 1) * 10;
                 }
+
                 victim.lastHitByDigimon.GiveEXP((int)(expAmount * victim.lastHitByDigimon.playerOwner.GetModPlayer<DigiBlockPlayer>().digimonEXPPercent));
-                
-                if (victim.lastHitByDigimon.biomeKills.TryGetValue(SpawnBiome, out int killCount))
+
+                //Handle biome kill count
+                if (victim.SpawnBiome == DigimonSpawnBiome.Unknown)
                 {
-                    Console.WriteLine("adding to "+victim.SpawnBiome+":" + victim.lastHitByDigimon.biomeKills[SpawnBiome]);
+                    victim.SpawnBiome = DetectBiome(npc.position); // recheck just before death
+                }
+                if (victim.lastHitByDigimon.biomeKills.TryGetValue(victim.SpawnBiome, out int killCount))
+                {
                     victim.lastHitByDigimon.biomeKills[victim.SpawnBiome] = killCount + 1;
                 }
                 else
                 {
-                    Console.WriteLine("adding to " + victim.SpawnBiome + ":" + 1);
                     victim.lastHitByDigimon.biomeKills.Add(victim.SpawnBiome, 1);
                 }
             }
@@ -65,7 +73,7 @@ namespace DigiBlock.Content.Systems
             npc.GetGlobalNPC<DigiBlockNPC>().SpawnBiome = DetectBiome(npc.position);
 
             // Debug logging
-            ModContent.GetInstance<DigiBlock>().Logger.Info($"{npc.FullName} spawned in biome: {SpawnBiome}");
+            ModContent.GetInstance<DigiBlock>().Logger.Info($"{npc.TypeName} spawned in biome: {npc.GetGlobalNPC<DigiBlockNPC>().SpawnBiome}");
         }
 
         private DigimonSpawnBiome DetectBiome(Vector2 position)

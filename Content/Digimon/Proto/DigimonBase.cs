@@ -8,6 +8,7 @@ using DigiBlock.Content.Items.Digimon;
 using DigiBlock.Content.Damage;
 using DigiBlock.Content.Systems;
 using System.Collections.Generic;
+using DigiBlock.Content.Digimon.Ability;
 
 
 namespace DigiBlock.Content.Digimon
@@ -39,8 +40,13 @@ namespace DigiBlock.Content.Digimon
         public bool justEvolved = false;
         public bool evolving = false;
         public bool summoned = false;
+        public bool canMove = true;
+        public bool useContactDamage = true;
 
         public Entity wildTarget = null;
+        public bool immune = false;
+        
+        public DigiAbility specialAbility;
 
         // Stats
         public int contactDamage;
@@ -88,7 +94,6 @@ namespace DigiBlock.Content.Digimon
 
         public void copyData(DigimonBase digimon)
         {
-            // tamed = digimon.tamed;
             card = digimon.card;
             NPC.friendly = digimon.NPC.friendly;
             level = digimon.level;
@@ -103,6 +108,7 @@ namespace DigiBlock.Content.Digimon
             maxEXP = digimon.maxEXP;
             maxHP = digimon.maxHP;
             NPC.active = digimon.NPC.active;
+            biomeKills = digimon.biomeKills;
             playerOwner = digimon.playerOwner;
         }
 
@@ -116,9 +122,8 @@ namespace DigiBlock.Content.Digimon
 
                     if (Main.item[cardIndex].ModItem is DigimonCard card)
                     {
-                        card.setDigimonNpcType(lootType); // this Digimon's NPC type
+                        card.setDigimonNpcType(lootType);
                     }
-                    // Try to assign card data post-drop if needed (see Note below)
                 }
             }
         }
@@ -130,7 +135,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void AI()
         {
-
+            specialAbility?._Update();
             // Targeting
             if (wildTarget == null)
             {
@@ -160,9 +165,14 @@ namespace DigiBlock.Content.Digimon
                 NPC.spriteDirection = NPC.direction;
                 if (NPC.friendly)
                 {
+                    if (useContactDamage)
+                    {
+                        NPC.damage = contactDamage;
+                    }
+                    
                     ContactDamage();
                 }
-
+                specialAbility?._Use();
             }
             else if (NPC.friendly) // No target and am friendly-> return to player position
             {
@@ -187,7 +197,14 @@ namespace DigiBlock.Content.Digimon
             {
                 wildTarget = null;
             }
+
+            if (canMove)
+            {
+                Move();
+            }
         }
+
+        public virtual void Move(){ }
 
         public override void PostAI()
         {
@@ -355,11 +372,19 @@ namespace DigiBlock.Content.Digimon
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
+            if (immune)
+            {
+                return false;
+            }
             return !NPC.friendly;
         }
 
         public override bool CanHitNPC(NPC target)
         {
+            if (immune)
+            {
+                return false;
+            }
             return !NPC.friendly;
         }
 
@@ -384,20 +409,12 @@ namespace DigiBlock.Content.Digimon
                             NPC.HitInfo hitInfo = new()
                             {
                                 // Use the damage modifiers of the owner player in damage calculations
-                                Damage = CalculateDamage(contactDamage, targetAttribute),
+                                Damage = CalculateDamage(NPC.damage, targetAttribute),
                                 Knockback = 1f,
                                 HitDirection = NPC.direction,
                                 DamageType = ModContent.GetInstance<DigitalDamage>(),
-                                // HideCombatText = true,
                             };
 
-                            // Add Digital Damage modifiers
-                            if (NPC.friendly)
-                            {
-
-                                // hitInfo.Crit = true;
-                                // hitInfo.Damage = hitInfo.Damage;
-                            }
 
                             // Store this Digimon in the target's GlobalNPC
                             if (target.TryGetGlobalNPC(out DigiBlockNPC victim))

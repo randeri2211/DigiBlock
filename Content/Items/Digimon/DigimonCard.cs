@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.ID;
 using DigiBlock.Common;
 using Microsoft.Xna.Framework;
+using System;
 
 
 namespace DigiBlock.Content.Items.Digimon
@@ -134,6 +135,7 @@ namespace DigiBlock.Content.Items.Digimon
             {
                 // digimon.biomeKills = tag.Get("");
             }
+            digimon.CalculateStats();
         }
 
         public int TryInitializeDigimon()
