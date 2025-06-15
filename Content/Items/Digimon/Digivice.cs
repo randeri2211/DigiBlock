@@ -12,12 +12,14 @@ namespace DigiBlock.Content.Items.Digimon
 {
     public class Digivice : ModItem
     {
-        public Item item = new Item();
-        private string item_tag = "item";
+        public Item card = new Item();
+        public Item disk = new Item();
+        private string card_tag = "item";
+        private string diskTag = "disk";
 
         public override void SetStaticDefaults()
         {
-            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; 
+            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
         }
 
         public override void SetDefaults()
@@ -32,7 +34,7 @@ namespace DigiBlock.Content.Items.Digimon
             Item.rare = ItemRarityID.Blue;
 
 
-            item = new Item(ItemID.None);
+            card = new Item(ItemID.None);
         }
 
         // Creating item craft
@@ -59,27 +61,39 @@ namespace DigiBlock.Content.Items.Digimon
 
         public override void SaveData(TagCompound tag)
         {
-            if (!item.IsAir)
-                tag[item_tag] = ItemIO.Save(item);
+            if (!card.IsAir)
+            {
+                tag[card_tag] = ItemIO.Save(card);
+                if (!disk.IsAir)
+                {
+                    tag[diskTag] = ItemIO.Save(disk);
+                }
+            }
         }
 
         public override void LoadData(TagCompound tag)
         {
-            if (tag.ContainsKey(item_tag))
+            if (tag.ContainsKey(card_tag))
             {
-                item = ItemIO.Load(tag.GetCompound(item_tag));
+                card = ItemIO.Load(tag.GetCompound(card_tag));
+                if (tag.ContainsKey(diskTag))
+                {
+                    disk = ItemIO.Load(tag.GetCompound(diskTag));
+                }
             }
             else
             {
-                item = new Item();
-                item.SetDefaults(0);
+                card = new Item();
+                card.SetDefaults(0);
+                disk = new Item();
+                disk.SetDefaults(0);
             }
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             base.ModifyTooltips(tooltips);
-            var digimonData = item.Name;
+            var digimonData = card.Name;
 
             var line = new TooltipLine(Mod, "Digivice Digimon", digimonData);
             tooltips.Add(line);

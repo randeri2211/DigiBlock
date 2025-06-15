@@ -13,7 +13,6 @@ namespace DigiBlock.Content.UI
     public class UIDiskSlot : UIElement
     {
         public Digivice digivice;
-        public Item item = new Item(); // starts as "air"
         private Item lastItem = new Item();
 
         public UIDiskSlot(Digivice digivice)
@@ -35,20 +34,20 @@ namespace DigiBlock.Content.UI
             if (hovering && (Main.mouseItem.type == ItemID.None || Main.mouseItem.ModItem is Disk disk))
             {
                 Main.LocalPlayer.mouseInterface = true;
-                ItemSlot.MouseHover(ref item, ItemSlot.Context.InventoryItem);
-                ItemSlot.LeftClick(ref item, ItemSlot.Context.InventoryItem);
-                ItemSlot.RightClick(ref item, ItemSlot.Context.InventoryItem);
+                ItemSlot.MouseHover(ref digivice.disk, ItemSlot.Context.InventoryItem);
+                ItemSlot.LeftClick(ref digivice.disk, ItemSlot.Context.InventoryItem);
+                ItemSlot.RightClick(ref digivice.disk, ItemSlot.Context.InventoryItem);
 
                 bool wasAir = lastItem.IsAir;
-                bool isAir = item.IsAir;
+                bool isAir = digivice.disk.IsAir;
 
                 // Now compare with previous state
-                if (!Item.Equals(item, lastItem))
+                if (!Item.Equals(digivice.disk, lastItem))
                 {
                     // Case: Removed
                     if (!wasAir && isAir)
                     {
-                        Console.WriteLine("item " + item.ToString() + "last item" + lastItem.ToString());
+                        Console.WriteLine("item " + digivice.disk.ToString() + "last item" + lastItem.ToString());
                         removeDisk(lastItem);
                     }
                     // Case: Inserted
@@ -62,11 +61,11 @@ namespace DigiBlock.Content.UI
                         removeDisk(lastItem);
                         addDisk();
                     }
-                    lastItem = item.Clone();
                 }
+                lastItem = digivice.disk;
             }
 
-            ItemSlot.Draw(spriteBatch, ref item, ItemSlot.Context.HotbarItem, dimensions.Position());
+            ItemSlot.Draw(spriteBatch, ref digivice.disk, ItemSlot.Context.HotbarItem, dimensions.Position());
         }
 
         public void removeDisk(Item item)
@@ -77,9 +76,11 @@ namespace DigiBlock.Content.UI
 
         public void addDisk()
         {
-            Disk disk = item.ModItem as Disk;
-            DigimonBase digimon = (digivice.item.ModItem as DigimonCard).digimon;
-            disk.digimon = digimon;
+            if(digivice.disk.ModItem is Disk disk)
+            {
+                DigimonBase digimon = (digivice.card.ModItem as DigimonCard).digimon;
+                disk.digimon = digimon;
+            }
         }
     }
 }

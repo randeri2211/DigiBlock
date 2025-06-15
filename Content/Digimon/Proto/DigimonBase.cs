@@ -9,7 +9,7 @@ using DigiBlock.Content.Damage;
 using DigiBlock.Content.Systems;
 using System.Collections.Generic;
 using DigiBlock.Content.Digimon.Ability;
-
+using DigiBlock.Content.Items.Disks;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -139,6 +139,11 @@ namespace DigiBlock.Content.Digimon
             for (int i = 0; i < specialAbilities.Count; i++)
             {
                 specialAbilities[i]?._Update();
+            }
+
+            if (NPC.friendly)
+            {
+                useDisks();
             }
             
             // Targeting
@@ -374,6 +379,7 @@ namespace DigiBlock.Content.Digimon
                 contactDamage += DigiblockConstants.LevelUpBonus;
                 specialDamage += DigiblockConstants.LevelUpBonus;
                 NPC.defense += DigiblockConstants.LevelUpBonus;
+                CalculateStats();
                 CheckLevelUp();
             }
         }
@@ -461,6 +467,22 @@ namespace DigiBlock.Content.Digimon
                             // Add immunity time to prevent rapid hits
                             target.immune[NPC.whoAmI] = 30; // 30 ticks = 0.5s
                         }
+                    }
+                }
+            }
+        }
+
+        private void useDisks()
+        {
+            if (NPC.active && card.digivice.disk.ModItem is Disk disk)
+            {
+                if (disk is HPDisk hPDisk && NPC.life <= NPC.lifeMax - hPDisk.healAmount)
+                {
+                    hPDisk.Use();
+                    disk.Item.stack--;
+                    if (disk.Item.stack < 0)
+                    {
+                        card.digivice.disk = new Item();
                     }
                 }
             }

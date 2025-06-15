@@ -64,7 +64,7 @@ namespace DigiBlock.Content.UI
             }
             else
             {
-                if (digivice.item != digiviceUI.GetDigiviceItem())
+                if (digivice.card != digiviceUI.GetDigiviceItem())
                 {
                     OpenUI(digivice);
                 }

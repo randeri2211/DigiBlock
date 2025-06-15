@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using DigiBlock.Content.Items.Disks;
 using DigiBlock.Content.Items.Digimon;
 using Terraria.ID;
 using DigiBlock.Content.Digimon;
@@ -19,7 +19,7 @@ namespace DigiBlock.Content.UI
             this.digivice = digivice;
             Width.Set(50f, 0f);
             Height.Set(50f, 0f);
-            this.item = digivice.item;
+            this.item = digivice.card;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -34,15 +34,15 @@ namespace DigiBlock.Content.UI
             if (hovering && (Main.mouseItem.type == ItemID.None || Main.mouseItem.ModItem is DigimonCard digimonCard))
             {
                 Main.LocalPlayer.mouseInterface = true;
-                ItemSlot.MouseHover(ref digivice.item, ItemSlot.Context.InventoryItem);
-                ItemSlot.LeftClick(ref digivice.item, ItemSlot.Context.InventoryItem);
-                ItemSlot.RightClick(ref digivice.item, ItemSlot.Context.InventoryItem);
+                ItemSlot.MouseHover(ref digivice.card, ItemSlot.Context.InventoryItem);
+                ItemSlot.LeftClick(ref digivice.card, ItemSlot.Context.InventoryItem);
+                ItemSlot.RightClick(ref digivice.card, ItemSlot.Context.InventoryItem);
 
                 bool wasAir = item.IsAir;
-                bool isAir = digivice.item.IsAir;
+                bool isAir = digivice.card.IsAir;
 
                 // Now compare with previous state
-                if (!Item.Equals(item, digivice.item))
+                if (!Item.Equals(item, digivice.card))
                 {
                     // Case: Removed
                     if (!wasAir && isAir)
@@ -60,11 +60,11 @@ namespace DigiBlock.Content.UI
                         removeCard(item);
                         addCard().digivice = digivice;
                     }
-                    item = digivice.item;
+                    item = digivice.card;
                 }
             }
 
-            ItemSlot.Draw(spriteBatch, ref digivice.item, ItemSlot.Context.HotbarItem, dimensions.Position());
+            ItemSlot.Draw(spriteBatch, ref digivice.card, ItemSlot.Context.HotbarItem, dimensions.Position());
         }
 
         public void removeCard(Item item)
@@ -76,7 +76,7 @@ namespace DigiBlock.Content.UI
 
         public DigimonCard addCard()
         {
-            DigimonCard c = digivice.item.ModItem as DigimonCard;
+            DigimonCard c = digivice.card.ModItem as DigimonCard;
             Player player = Main.LocalPlayer;
             int newNpcId = NPC.NewNPC(null, (int)player.position.X, (int)player.position.Y, c.digimon.Type);
             if (Main.npc[newNpcId].ModNPC is DigimonBase digiNPC)
@@ -84,7 +84,8 @@ namespace DigiBlock.Content.UI
                 digiNPC.copyData(c.digimon);
                 digiNPC.NPC.active = true;
                 c.digimon = digiNPC;
-                c.digivice = digivice;
+                c.digivice = digivice; // TODO:line is redundant i think
+                (digivice.disk.ModItem as Disk).digimon = digiNPC;
                 c.digimon.CalculateStats();
             }
             return c;

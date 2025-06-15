@@ -23,5 +23,10 @@ namespace DigiBlock.Content.Items.Disks
             Item.rare = ItemRarityID.Green;
             Item.maxStack = 99;
         }
+
+        public virtual void Use()
+        {
+            
+        }
     }
 }
