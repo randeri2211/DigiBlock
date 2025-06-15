@@ -46,7 +46,8 @@ namespace DigiBlock.Content.Digimon
         public Entity wildTarget = null;
         public bool immune = false;
         
-        public DigiAbility specialAbility;
+        public List<DigiAbility> specialAbilities = new List<DigiAbility>();
+        public int specialAbilityIndex;
 
         // Stats
         public int contactDamage;
@@ -135,7 +136,11 @@ namespace DigiBlock.Content.Digimon
 
         public override void AI()
         {
-            specialAbility?._Update();
+            for (int i = 0; i < specialAbilities.Count; i++)
+            {
+                specialAbilities[i]?._Update();
+            }
+            
             // Targeting
             if (wildTarget == null)
             {
@@ -172,7 +177,10 @@ namespace DigiBlock.Content.Digimon
                     
                     ContactDamage();
                 }
-                specialAbility?._Use();
+                if (specialAbilities.Count > specialAbilityIndex)
+                {
+                    specialAbilities[specialAbilityIndex]?._Use();
+                }
             }
             else if (NPC.friendly) // No target and am friendly-> return to player position
             {
@@ -380,6 +388,33 @@ namespace DigiBlock.Content.Digimon
         }
 
         public override bool CanHitNPC(NPC target)
+        {
+            if (immune)
+            {
+                return false;
+            }
+            return !NPC.friendly;
+        }
+
+        public override bool CanBeHitByNPC(NPC attacker)
+        {
+            if (immune)
+            {
+                return false;
+            }
+            return NPC.friendly != attacker.friendly;
+        }
+
+        public override bool? CanBeHitByItem(Player player, Item item)
+        {
+            if (immune)
+            {
+                return false;
+            }
+            return !NPC.friendly;
+        }
+
+        public override bool? CanBeHitByProjectile(Projectile projectile)
         {
             if (immune)
             {

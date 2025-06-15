@@ -5,6 +5,8 @@ using System;
 using Terraria;
 using DigiBlock.Content.Items.Digimon;
 using System.Collections.Generic;
+using Terraria.ModLoader.UI;
+using DigiBlock.Content.Digimon.Ability;
 
 
 namespace DigiBlock.Content.UI
@@ -12,9 +14,12 @@ namespace DigiBlock.Content.UI
     public class DigiviceUI : UIState
     {
         private UIPanel panel;
-        private MYUIItemSlot itemSlot;
+        private MYUIItemSlot digiviceSlot;
         private float defaultPanelWidth = 100f;
         private float defaultPanelHeight = 100f;
+        private List<UIButton<string>> buttonList = new List<UIButton<string>>();
+        private UIDiskSlot diskSlot;
+        UIText dataUI;
         public override void OnInitialize()
         {
             panel = new UIDraggablePanel();
@@ -30,21 +35,24 @@ namespace DigiBlock.Content.UI
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            List<UIElement> toRemove = new List<UIElement>();
-            foreach (var element in panel.Children)
+            if (dataUI != null)
             {
-                if (element is UIText)
+                panel.RemoveChild(dataUI);
+            }
+            foreach (UIButton<string> button in buttonList)
+            {
+                panel.RemoveChild(button);
+            }
+            if (!digiviceSlot.item.IsAir && digiviceSlot.item.ModItem is DigimonCard digimonCard)
+            {
+                // Has DigimonCard
+                if (diskSlot == null) // Only on the first digimon insertion
                 {
-                    toRemove.Add(element);
+                    diskSlot = new UIDiskSlot(digiviceSlot.digivice);
+                    diskSlot.Left.Set(-diskSlot.Width.Pixels / 2 + panel.PaddingLeft, 0.25f);
+                    diskSlot.Top.Set(0f, 0f);
+                    panel.Append(diskSlot);
                 }
-            }
-            foreach (var element in toRemove)
-            {
-                panel.RemoveChild(element);
-            }
-            if (!itemSlot.item.IsAir && itemSlot.item.ModItem is DigimonCard digimonCard)
-            {
-
                 string text = "";
                 text += "Name: " + digimonCard.digimon.name + "\n";
                 text += "Level: " + digimonCard.digimon.level + "\n";
@@ -60,25 +68,69 @@ namespace DigiBlock.Content.UI
                 {
                     text += biome + ": " + digimonCard.digimon.biomeKills[biome] + "\n";
                 }
-                UIText dataUI = new UIText(text);
-                dataUI.Top.Set(itemSlot.GetDimensions().Height + itemSlot.Top.Pixels, 0f);
-                // Console.WriteLine("height " + dataUI.GetInnerDimensions().Height + "percent" + dataUI.Height.Percent);
-                // Console.WriteLine("width " + dataUI.GetInnerDimensions().Width + "percent" + dataUI.Width.Pixels);
-                // panel.Height.Set(itemSlot.GetInnerDimensions().Height + itemSlot.Top.Pixels + dataUI.GetInnerDimensions().Height,0f);
-                // panel.Width.Set(Math.Max(dataUI.GetInnerDimensions().Width + panel.PaddingLeft + panel.PaddingRight, defaultPanelWidth),0f);
+                dataUI = new UIText(text);
+                dataUI.Top.Set(digiviceSlot.GetDimensions().Height + digiviceSlot.Top.Pixels, 0f);
                 panel.Append(dataUI);
-                dataUI.Recalculate();
-                panel.Recalculate();
-
 
                 Vector2 textSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
                 float padding = panel.PaddingLeft + panel.PaddingRight;
 
+                float buttonHeight = 0;
+                for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
+                {
+                    DigiAbility ability = digimonCard.digimon.specialAbilities[i];
+                    UIButton<string> button = new UIButton<string>(ability.GetType().Name);
+                    // button.TooltipText = true;
+                    button.HoverText = ability.tooltip;
+                    button.AltHoverText = ability.tooltip;
+                    button.Top.Set(buttonHeight + textSize.Y + dataUI.Top.Pixels - panel.PaddingBottom - panel.PaddingTop, 0f);
+                    // button.Left.Set(panel.PaddingLeft, 0f);
+                    Vector2 bDim = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(button.HoverText);
+                    button.Width.Set(bDim.X,0f);
+                    button.Height.Set(bDim.Y,0f);
+                    buttonHeight += bDim.Y;
+                    int index = i;
+                    button.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+                    {
+                        digimonCard.digimon.specialAbilityIndex = index;
+                        // Console.WriteLine("" + digimonCard.digimon.specialAbilityIndex);
+                        foreach (UIButton<string> b in buttonList)
+                        {
+
+                            if (b != button)
+                            {
+                                b.BackgroundColor = Color.DarkSlateGray * 0.6f;
+                                b.BorderColor = Color.Gray;
+                            }
+                            else
+                            {
+                                b.BackgroundColor = Color.White * 0.8f;
+                                b.BorderColor = Color.LightGray;
+                            }
+                        }
+                    };
+
+                    buttonList.Add(button);
+                    panel.Append(button);
+                    button.Recalculate();
+                }
+
+                // Console.WriteLine("button height: " + buttonHeight);
+                
+
                 panel.Width.Set(Math.Max(textSize.X + padding, defaultPanelWidth), 0f);
-                panel.Height.Set(itemSlot.Top.Pixels + itemSlot.GetInnerDimensions().Height + textSize.Y, 0f);
+                panel.Height.Set(digiviceSlot.Top.Pixels + digiviceSlot.GetInnerDimensions().Height + textSize.Y + buttonHeight, 0f);
+                dataUI.Recalculate();
+                panel.Recalculate();
             }
             else
             {
+                if (diskSlot != null)
+                {
+                    panel.RemoveChild(diskSlot);
+                    diskSlot = null;
+                }
+                // No DigimonCard
                 if (panel.GetDimensions().Width != defaultPanelWidth || panel.GetDimensions().Height != defaultPanelHeight)
                 {
                     panel.Width.Set(defaultPanelWidth, 0f);
@@ -90,15 +142,15 @@ namespace DigiBlock.Content.UI
         public void SetDigiviceItem(Digivice digivice)
         {
             panel.RemoveAllChildren();
-            itemSlot = new MYUIItemSlot(digivice);
-            itemSlot.Left.Set(-itemSlot.Width.Pixels / 2 + panel.PaddingLeft, 0.5f);
-            itemSlot.Top.Set(25f, 0f);
-            panel.Append(itemSlot);
+            digiviceSlot = new MYUIItemSlot(digivice);
+            digiviceSlot.Left.Set(-digiviceSlot.Width.Pixels / 2 + panel.PaddingLeft, 0.5f);
+            digiviceSlot.Top.Set(0f, 0f);
+            panel.Append(digiviceSlot);
         }
 
         public Item GetDigiviceItem()
         {
-            return itemSlot.digivice.item;
+            return digiviceSlot.digivice.item;
         }
     }
 }

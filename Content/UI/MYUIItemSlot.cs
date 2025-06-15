@@ -64,7 +64,7 @@ namespace DigiBlock.Content.UI
                 }
             }
 
-            ItemSlot.Draw(spriteBatch, ref digivice.item, ItemSlot.Context.ShopItem, dimensions.Position());
+            ItemSlot.Draw(spriteBatch, ref digivice.item, ItemSlot.Context.HotbarItem, dimensions.Position());
         }
 
         public void removeCard(Item item)

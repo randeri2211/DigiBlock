@@ -71,9 +71,6 @@ namespace DigiBlock.Content.Systems
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
             npc.GetGlobalNPC<DigiBlockNPC>().SpawnBiome = DetectBiome(npc.position);
-
-            // Debug logging
-            ModContent.GetInstance<DigiBlock>().Logger.Info($"{npc.TypeName} spawned in biome: {npc.GetGlobalNPC<DigiBlockNPC>().SpawnBiome}");
         }
 
         private DigimonSpawnBiome DetectBiome(Vector2 position)

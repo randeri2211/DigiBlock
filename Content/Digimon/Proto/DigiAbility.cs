@@ -11,6 +11,7 @@ namespace DigiBlock.Content.Digimon.Ability
         public int coolDown;
         public int currentCoolDown;
         public bool specialScale = true;// true->scales with special attack,false->scales with attack
+        public string tooltip = "";
         public DigiAbility(DigimonBase digimon)
         {
             this.digimon = digimon;

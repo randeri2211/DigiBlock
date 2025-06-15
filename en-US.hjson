@@ -65,6 +65,11 @@ Mods: {
 				DisplayName: Omega Chip
 				Tooltip: ""
 			}
+
+			HPDisk: {
+				DisplayName: H P Disk
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {
