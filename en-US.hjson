@@ -100,5 +100,7 @@ Mods: {
 			"Open Digimon UI.DisplayName": Open  Digimon  U I
 			"Toggle Evolution Graph.DisplayName": Toggle  Evolution  Graph
 		}
+
+		Projectiles.DigiFireballProjectile.DisplayName: Digi Fireball Projectile
 	}
 }

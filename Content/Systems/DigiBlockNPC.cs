@@ -33,7 +33,6 @@ namespace DigiBlock.Content.Systems
         public override void OnKill(NPC npc)
         {
             DigiBlockNPC victim = npc.GetGlobalNPC<DigiBlockNPC>();
-
             // Killed by tamed digimon
             if (victim.lastHitByDigimon != null)
             {
@@ -91,5 +90,6 @@ namespace DigiBlock.Content.Systems
 
             return DigimonSpawnBiome.Unknown;
         }
+
     }
 }

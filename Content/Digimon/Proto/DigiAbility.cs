@@ -11,6 +11,7 @@ namespace DigiBlock.Content.Digimon.Ability
         public int coolDown;
         public int currentCoolDown;
         public bool specialScale = true;// true->scales with special attack,false->scales with attack
+        public float percentScale = 1f;
         public string tooltip = "";
         public DigiAbility(DigimonBase digimon)
         {
@@ -30,7 +31,7 @@ namespace DigiBlock.Content.Digimon.Ability
                 {
                     damage = digimon.contactDamage;
                 }
-                Use(digimon.CalculateDamage(damage));
+                Use(digimon.CalculateDamage((int)(damage * percentScale)));
                 currentCoolDown = coolDown;
             }
         }

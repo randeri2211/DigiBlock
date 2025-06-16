@@ -21,7 +21,7 @@ namespace DigiBlock.Content.Digimon
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
             specialAbilities.Add(new Dash(this));
-            specialAbilities.Add(new Dash(this));
+            specialAbilities.Add(new FireBall(this));
             if (contactDamage == 0)
             {
                 contactDamage = 20;
