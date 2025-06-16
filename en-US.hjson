@@ -101,6 +101,9 @@ Mods: {
 			"Toggle Evolution Graph.DisplayName": Toggle  Evolution  Graph
 		}
 
-		Projectiles.DigiFireballProjectile.DisplayName: Digi Fireball Projectile
+		Projectiles: {
+			DigiFireballProjectile.DisplayName: Digi Fireball Projectile
+			FireballProjectile.DisplayName: Fireball Projectile
+		}
 	}
 }

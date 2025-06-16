@@ -12,7 +12,7 @@ namespace DigiBlock.Content.Digimon.Ability
         {
             coolDown = 300;
             this.tooltip = "Shoots Fireballs\nDamage scales 100% Special Attack";
-            projectileType = ModContent.ProjectileType<DigiFireballProjectile>();
+            projectileType = ModContent.ProjectileType<FireballProjectile>();
         }
     }
 }

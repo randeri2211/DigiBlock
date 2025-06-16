@@ -6,7 +6,7 @@ using DigiBlock.Content.Damage;
 
 namespace DigiBlock.Content.Projectiles
 {
-    public class DigiFireballProjectile : ProjectileBase
+    public class FireballProjectile : ProjectileBase
     {
 
         public override void SetDefaults()

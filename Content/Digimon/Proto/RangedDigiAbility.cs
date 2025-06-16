@@ -34,7 +34,7 @@ namespace DigiBlock.Content.Digimon.Ability
 
                 if (Main.projectile.IndexInRange(projID))
                 {
-                    DigiFireballProjectile proj = Main.projectile[projID].ModProjectile as DigiFireballProjectile;
+                    FireballProjectile proj = Main.projectile[projID].ModProjectile as FireballProjectile;
                     if (proj != null)
                     {
                         proj.digimon = digimon;
