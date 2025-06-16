@@ -10,12 +10,13 @@ using DigiBlock.Content.Systems;
 using System.Collections.Generic;
 using DigiBlock.Content.Digimon.Ability;
 using DigiBlock.Content.Items.Disks;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DigiBlock.Content.Digimon
 {
     public enum Evolutions
     {
-        InTraining,
+        InTraining = 1,
         Rookie,
         Champion,
         Ultimate,
@@ -36,7 +37,7 @@ namespace DigiBlock.Content.Digimon
         public DigimonCard card;
         public Player playerOwner = null;
         public Vector2 playerLocation;
-        public float playerDistance;
+        public float playerDistance = 0;
         public bool justEvolved = false;
         public bool evolving = false;
         public bool summoned = false;
@@ -45,11 +46,16 @@ namespace DigiBlock.Content.Digimon
 
         public Entity wildTarget = null;
         public bool immune = false;
-        
+
         public List<DigiAbility> specialAbilities = new List<DigiAbility>();
         public int specialAbilityIndex;
 
         // Stats
+        public int basePhysicalDamage;
+        public int baseSpecialDamage;
+        public int baseAgility;
+        public int baseDefense;
+        public int baseMaxHP;
         public int physicalDamage;
         public int specialDamage;
         public int agility;
@@ -59,8 +65,9 @@ namespace DigiBlock.Content.Digimon
         public int maxEXP = DigiblockConstants.StartingEXP;
         public int level = 1;
         public Evolutions evoStage;
-        public Dictionary<DigimonSpawnBiome, int> biomeKills = new Dictionary<DigimonSpawnBiome,int>();
-        public int[] wildLvlRange = { 1, 1 };
+        public Dictionary<DigimonSpawnBiome, int> biomeKills = new Dictionary<DigimonSpawnBiome, int>();
+        public int[] wildLvlRange = { 1, 50 * (Main.hardMode ? 2 : 1) };
+        private static readonly Random rng = new Random();
 
         public override void SetStaticDefaults()
         {
@@ -87,10 +94,16 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            physicalDamage = basePhysicalDamage;
+            specialDamage = baseSpecialDamage;
+            agility = baseAgility;
+            defense = baseDefense;
+            maxHP = baseMaxHP;
             // Level up to random level by range
-            for (int i = level; i < new Random().Next(wildLvlRange[0], wildLvlRange[1]); i++)
+            int l = rng.Next(wildLvlRange[0], wildLvlRange[1]);
+            // Console.WriteLine("leveling up to" + l + "max is "+wildLvlRange[1]);
+            for (int i = level; i < l; i++)
             {
-                Console.WriteLine("giving lvl" + i);
                 GiveEXP(maxEXP);
             }
             name = Name;
@@ -98,7 +111,7 @@ namespace DigiBlock.Content.Digimon
             NPC.lifeMax = maxHP;
             NPC.defense = defense;
             NPC.friendly = false; // Wild digimon by default
-            
+
         }
 
         public void copyData(DigimonBase digimon)
@@ -154,8 +167,23 @@ namespace DigiBlock.Content.Digimon
             if (NPC.friendly)
             {
                 useDisks();
+                float maxDistance = NPCID.Sets.DangerDetectRange[Type];
+                if (playerOwner == null)
+                {
+                    playerOwner = card.digivice.FindPlayer();
+                    CalculateStats();
+                }
+                playerLocation = playerOwner.Center;
+                playerDistance = Vector2.Distance(playerLocation, NPC.Center);
+                if (playerDistance > maxDistance)
+                {
+                    NPC.Center = playerLocation;
+                    wildTarget = null;
+                }
+                NPC.target = 255;
+                
             }
-            
+
             // Targeting
             if (wildTarget == null)
             {
@@ -189,7 +217,7 @@ namespace DigiBlock.Content.Digimon
                     {
                         NPC.damage = physicalDamage;
                     }
-                    
+
                     ContactDamage();
                 }
                 if (specialAbilities.Count > specialAbilityIndex)
@@ -227,7 +255,7 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        public virtual void Move(){ }
+        public virtual void Move() { }
 
         public override void PostAI()
         {
@@ -279,14 +307,7 @@ namespace DigiBlock.Content.Digimon
             int closestEnemy = -1;
             float closestDistance = NPCID.Sets.DangerDetectRange[Type]; // Use the defined range
             float maxDistance = NPCID.Sets.DangerDetectRange[Type];
-            if (playerOwner == null)
-            {
-                playerOwner = card.digivice.FindPlayer();
-                CalculateStats();
-            }
 
-            playerLocation = playerOwner.Center;
-            playerDistance = Vector2.Distance(playerLocation, NPC.Center);
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC target = Main.npc[i];
@@ -315,14 +336,6 @@ namespace DigiBlock.Content.Digimon
                     NPC.direction = -1;
                 }
                 NPC.spriteDirection = NPC.direction;
-            }
-            else
-            {
-                if (playerDistance > maxDistance)
-                {
-                    NPC.Center = playerLocation;
-                }
-                NPC.target = 255;
             }
         }
 
@@ -385,29 +398,32 @@ namespace DigiBlock.Content.Digimon
                 currentEXP -= maxEXP;
                 level++;
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
-                agility += DigiblockConstants.LevelUpBonus;
-                maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
-                physicalDamage += DigiblockConstants.LevelUpBonus;
-                specialDamage += DigiblockConstants.LevelUpBonus;
-                defense += DigiblockConstants.LevelUpBonus;
+                agility += DigiblockConstants.LevelUpBonus * (int)evoStage;
+                maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier * (int)evoStage;
+                physicalDamage += DigiblockConstants.LevelUpBonus * (int)evoStage;
+                Console.WriteLine((int)evoStage);
+                specialDamage += DigiblockConstants.LevelUpBonus * (int)evoStage;
+                defense += DigiblockConstants.LevelUpBonus * (int)evoStage;
                 CalculateStats();
                 CheckLevelUp();
             }
         }
 
-        
+
         public void resetLevel()
         {
-            for (int i = level; i > 1; i--)
-            {
-                level--;
-                agility += DigiblockConstants.LevelUpBonus;
-                maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
-                physicalDamage += DigiblockConstants.LevelUpBonus;
-                specialDamage += DigiblockConstants.LevelUpBonus;
-                defense += DigiblockConstants.LevelUpBonus;
-                maxEXP = DigiblockConstants.StartingEXP;
-            }
+            Mod mod = ModContent.GetInstance<DigiBlock>();
+            DigimonBase digimonBase = mod.Find<ModNPC>(Name) as DigimonBase;
+            level = 1;
+            agility = baseAgility;
+            physicalDamage = basePhysicalDamage;
+            specialDamage = baseSpecialDamage;
+            defense = baseDefense;
+            maxHP = baseMaxHP;
+            NPC.life = maxHP;
+            maxEXP = DigiblockConstants.StartingEXP;
+            currentEXP = 0;
+            CalculateStats();
         }
 
 
@@ -453,7 +469,7 @@ namespace DigiBlock.Content.Digimon
             {
                 return false;
             }
-            
+
             return !NPC.friendly;
         }
 
@@ -523,8 +539,24 @@ namespace DigiBlock.Content.Digimon
             }
         }
 
-        public virtual void WildAI() { }
-        public virtual void TamedAI() { }
-
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            string tooltip = $"LV: {level} {attribute}";
+            Vector2 position = NPC.Top - screenPos ; // 30 pixels above head
+            Color color = Color.White;
+            switch (attribute)
+            {
+                case Attributes.Data:
+                    color = Color.Blue;
+                    break;
+                case Attributes.Virus:
+                    color = Color.Red;
+                    break;
+                case Attributes.Vaccine:
+                    color = Color.Green;
+                    break;
+            }
+            Utils.DrawBorderString(spriteBatch, tooltip, position, color, 0.75f, 0.5f, 0.5f);
+        }
     }
 }

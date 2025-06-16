@@ -177,6 +177,8 @@ namespace DigiBlock.Content.Systems
                 digimon.card.digimon = evolvedNPC;
                 digimon.card.setDigimonNpcType(etype, false);
                 evolvedNPC.copyData(digimon);
+                evolvedNPC.level = 1;
+                evolvedNPC.maxEXP = DigiblockConstants.StartingEXP;
                 evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
                 evolvedNPC.physicalDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
                 evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
