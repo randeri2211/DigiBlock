@@ -85,7 +85,10 @@ namespace DigiBlock.Content.UI
                 digiNPC.NPC.active = true;
                 c.digimon = digiNPC;
                 c.digivice = digivice; // TODO:line is redundant i think
-                (digivice.disk.ModItem as Disk).digimon = digiNPC;
+                if (!digivice.disk.IsAir)
+                {
+                    (digivice.disk.ModItem as Disk).digimon = digiNPC;
+                }
                 c.digimon.CalculateStats();
             }
             return c;

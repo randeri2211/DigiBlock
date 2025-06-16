@@ -6,9 +6,9 @@ using Terraria.ModLoader;
 
 namespace DigiBlock.Content.Items.Disks
 {
-    public class HPDisk : Disk
+    public class EXPDisk : Disk
     {
-        public int healAmount = 0;
+        public int expAmount = 0;
         public override void SetStaticDefaults()
         {
             
@@ -17,8 +17,8 @@ namespace DigiBlock.Content.Items.Disks
         public override void SetDefaults()
         {
             base.SetDefaults();
-            healAmount = 20;
-            Item.SetNameOverride("HP Disk");
+            expAmount = 20;
+            Item.SetNameOverride("EXP Disk");
             Item.width = 31;
             Item.height = 31;
             Item.value = Item.sellPrice(silver: 50);
@@ -27,13 +27,13 @@ namespace DigiBlock.Content.Items.Disks
 
         public override void Use()
         {
-            digimon.NPC.life = Math.Min(digimon.NPC.lifeMax, digimon.NPC.life + healAmount);
+            digimon.GiveEXP(expAmount);
             base.Use();
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.Add(new TooltipLine(Mod, "HPDisk", "Heals the digimon by "+healAmount+" HP if lacking atleast that amount"));
+            tooltips.Add(new TooltipLine(Mod, "HPDisk", "Gives the digimon "+expAmount+" EXP"));
         }
     }
 }

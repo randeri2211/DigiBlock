@@ -477,15 +477,22 @@ namespace DigiBlock.Content.Digimon
         {
             if (NPC.active && card.digivice.disk.ModItem is Disk disk)
             {
-                if (disk is HPDisk hPDisk && NPC.life <= NPC.lifeMax - hPDisk.healAmount)
+                if (disk is HPDisk hpDisk && NPC.life <= NPC.lifeMax - hpDisk.healAmount)
                 {
-                    hPDisk.Use();
-                    disk.Item.stack--;
-                    if (disk.Item.stack < 0)
-                    {
-                        card.digivice.disk = new Item();
-                    }
+                    hpDisk.Use();
                 }
+                else if (disk is EXPDisk expDisk)
+                {
+                    expDisk.Use();
+                }
+            }
+        }
+        public void useDisk()
+        {
+            card.digivice.disk.stack--;
+            if (card.digivice.disk.stack <= 0)
+            {
+                card.digivice.disk = new Item();
             }
         }
 

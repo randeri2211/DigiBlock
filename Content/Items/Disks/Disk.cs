@@ -26,7 +26,7 @@ namespace DigiBlock.Content.Items.Disks
 
         public virtual void Use()
         {
-            
+            digimon.useDisk();
         }
     }
 }
