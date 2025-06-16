@@ -56,7 +56,7 @@ namespace DigiBlock.Content.UI
                 text += "Level: " + digimonCard.digimon.level + "\n";
                 text += "HP: " + digimonCard.digimon.NPC.life + "/" + digimonCard.digimon.NPC.lifeMax + "\n";
                 text += "Exp: " + digimonCard.digimon.getEXP() + "/" + digimonCard.digimon.maxEXP + "\n";
-                text += "Contact Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.contactDamage) + "\n";
+                text += "Contact Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.physicalDamage) + "\n";
                 text += "Special Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.specialDamage) + "\n";
                 text += "Agility: " + digimonCard.digimon.agility + "\n";
                 text += "Defense: " + digimonCard.digimon.NPC.defense + "\n";

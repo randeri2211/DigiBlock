@@ -29,7 +29,7 @@ namespace DigiBlock.Content.Digimon.Ability
                 }
                 else
                 {
-                    damage = digimon.contactDamage;
+                    damage = digimon.physicalDamage;
                 }
                 Use(digimon.CalculateDamage((int)(damage * percentScale)));
                 currentCoolDown = coolDown;

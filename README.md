@@ -28,8 +28,8 @@
 ## Items
 - [x] Digivices
 - [x] Digimon item cards(to spawn the digimon using digivice)
-- [ ] HP/Mana disks for the digimon
-- [ ] Byte gives exp(like rare candy)(several byte sizes)
+- [x] HP/Mana disks for the digimon
+- [x] Byte gives exp(like rare candy)(several byte sizes)
 - [ ] Digimon Special Move Staff(probably not?)
 
 ## Digimon

@@ -34,7 +34,7 @@ namespace DigiBlock.Content.Digimon
         public string name;
         public Attributes attribute;
         public DigimonCard card;
-        public Player playerOwner;
+        public Player playerOwner = null;
         public Vector2 playerLocation;
         public float playerDistance;
         public bool justEvolved = false;
@@ -50,16 +50,17 @@ namespace DigiBlock.Content.Digimon
         public int specialAbilityIndex;
 
         // Stats
-        public int contactDamage;
+        public int physicalDamage;
         public int specialDamage;
         public int agility;
         public int defense;
         public int maxHP;
         private int currentEXP = 0;
         public int maxEXP = DigiblockConstants.StartingEXP;
-        public int level = 16;
+        public int level = 1;
         public Evolutions evoStage;
         public Dictionary<DigimonSpawnBiome, int> biomeKills = new Dictionary<DigimonSpawnBiome,int>();
+        public int[] wildLvlRange = { 1, 1 };
 
         public override void SetStaticDefaults()
         {
@@ -86,11 +87,18 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            // Level up to random level by range
+            for (int i = level; i < new Random().Next(wildLvlRange[0], wildLvlRange[1]); i++)
+            {
+                Console.WriteLine("giving lvl" + i);
+                GiveEXP(maxEXP);
+            }
             name = Name;
-            NPC.damage = contactDamage;
+            NPC.damage = physicalDamage;
             NPC.lifeMax = maxHP;
             NPC.defense = defense;
             NPC.friendly = false; // Wild digimon by default
+            
         }
 
         public void copyData(DigimonBase digimon)
@@ -101,7 +109,7 @@ namespace DigiBlock.Content.Digimon
             NPC.lifeMax = digimon.NPC.lifeMax;
             NPC.life = digimon.NPC.life;
             NPC.damage = digimon.NPC.damage;
-            contactDamage = digimon.contactDamage;
+            physicalDamage = digimon.physicalDamage;
             specialDamage = digimon.specialDamage;
             NPC.defense = digimon.NPC.defense;
             defense = digimon.defense;
@@ -125,6 +133,7 @@ namespace DigiBlock.Content.Digimon
                     if (Main.item[cardIndex].ModItem is DigimonCard card)
                     {
                         card.setDigimonNpcType(lootType);
+                        card.digimon.resetLevel();
                     }
                 }
             }
@@ -178,7 +187,7 @@ namespace DigiBlock.Content.Digimon
                 {
                     if (useContactDamage)
                     {
-                        NPC.damage = contactDamage;
+                        NPC.damage = physicalDamage;
                     }
                     
                     ContactDamage();
@@ -233,8 +242,9 @@ namespace DigiBlock.Content.Digimon
         {
             if (playerOwner != null)
             {
+                float lifePercent = NPC.lifeMax / NPC.life;
                 NPC.lifeMax = (int)(maxHP * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent);
-
+                NPC.life = (int)(NPC.lifeMax * lifePercent);
                 NPC.defense = (int)(defense * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonDefensePercent);
             }
             else
@@ -373,17 +383,33 @@ namespace DigiBlock.Content.Digimon
             if (currentEXP >= maxEXP)
             {
                 currentEXP -= maxEXP;
-                level += 1;
+                level++;
                 maxEXP = (int)(maxEXP * DigiblockConstants.LevelingEXPMultiplier);
                 agility += DigiblockConstants.LevelUpBonus;
                 maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
-                contactDamage += DigiblockConstants.LevelUpBonus;
+                physicalDamage += DigiblockConstants.LevelUpBonus;
                 specialDamage += DigiblockConstants.LevelUpBonus;
-                NPC.defense += DigiblockConstants.LevelUpBonus;
+                defense += DigiblockConstants.LevelUpBonus;
                 CalculateStats();
                 CheckLevelUp();
             }
         }
+
+        
+        public void resetLevel()
+        {
+            for (int i = level; i > 1; i--)
+            {
+                level--;
+                agility += DigiblockConstants.LevelUpBonus;
+                maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier;
+                physicalDamage += DigiblockConstants.LevelUpBonus;
+                specialDamage += DigiblockConstants.LevelUpBonus;
+                defense += DigiblockConstants.LevelUpBonus;
+                maxEXP = DigiblockConstants.StartingEXP;
+            }
+        }
+
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
@@ -396,11 +422,11 @@ namespace DigiBlock.Content.Digimon
 
         public override bool CanHitNPC(NPC target)
         {
-            if (immune)
+            if (target.ModNPC is DigimonBase digimon && digimon.immune)
             {
                 return false;
             }
-            return !NPC.friendly;
+            return NPC.friendly != target.friendly;
         }
 
         public override bool CanBeHitByNPC(NPC attacker)
@@ -427,6 +453,7 @@ namespace DigiBlock.Content.Digimon
             {
                 return false;
             }
+            
             return !NPC.friendly;
         }
 

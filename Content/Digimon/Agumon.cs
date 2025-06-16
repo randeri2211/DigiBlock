@@ -19,10 +19,11 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            wildLvlRange[1] = 10;
             specialAbilities.Add(new FireBall(this));
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
-            contactDamage = 5;
+            physicalDamage = 5;
             agility = 5;
             NPC.width = 32;
             NPC.height = 32;

@@ -54,7 +54,7 @@ namespace DigiBlock.Content.Items.Digimon
                 tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));
                 tooltips.Add(new TooltipLine(Mod, "DigimonEXP", "Exp: " + digimon.getEXP() + "/" + digimon.maxEXP));
-                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.contactDamage)));
+                tooltips.Add(new TooltipLine(Mod, "DigimonDamage", "Contact Digital Damage: " + digimon.CalculateDamage(digimon.physicalDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonDamage2", "Special Digital Damage: " + digimon.CalculateDamage(digimon.specialDamage)));
                 tooltips.Add(new TooltipLine(Mod, "DigimonAgility", "Agility: " + digimon.agility));
                 tooltips.Add(new TooltipLine(Mod, "DigimonDefense", "Defense: " + digimon.NPC.defense));
@@ -79,7 +79,7 @@ namespace DigiBlock.Content.Items.Digimon
         public override void SaveData(Terraria.ModLoader.IO.TagCompound tag)
         {
             tag["npcType"] = getDigimonNpcType();
-            tag["contactDamage"] = digimon.contactDamage;
+            tag["contactDamage"] = digimon.physicalDamage;
             tag["specialDamage"] = digimon.specialDamage;
             tag["agility"] = digimon.agility;
             tag["level"] = digimon.level;
@@ -106,7 +106,7 @@ namespace DigiBlock.Content.Items.Digimon
             }
             if (tag.ContainsKey("contactDamage"))
             {
-                digimon.contactDamage = tag.GetInt("contactDamage");
+                digimon.physicalDamage = tag.GetInt("contactDamage");
             }
             if (tag.ContainsKey("specialDamage"))
             {

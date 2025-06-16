@@ -40,7 +40,7 @@ namespace DigiBlock.Content.Digimon.Ability
                 dashTimer--;
                 if (dashTimer <= 0)
                 {
-                    digimon.NPC.damage = digimon.CalculateDamage(digimon.contactDamage);
+                    digimon.NPC.damage = digimon.CalculateDamage(digimon.physicalDamage);
                     digimon.canMove = true;
                     digimon.useContactDamage = true;
                     // digimon.NPC.velocity = Vector2.Zero;

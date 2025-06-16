@@ -16,6 +16,11 @@ namespace DigiBlock.Content.Projectiles
             Projectile.DamageType = ModContent.GetInstance<DigitalDamage>();
         }
 
+        public override bool? CanHitNPC(NPC target)
+        {
+            return target.friendly != digimon.NPC.friendly;
+        }
+
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
             if (target.TryGetGlobalNPC(out DigiBlockNPC globalTarget))

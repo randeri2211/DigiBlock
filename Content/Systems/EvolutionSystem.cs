@@ -177,10 +177,10 @@ namespace DigiBlock.Content.Systems
                 digimon.card.digimon = evolvedNPC;
                 digimon.card.setDigimonNpcType(etype, false);
                 evolvedNPC.copyData(digimon);
-                evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus;
-                evolvedNPC.contactDamage += DigiblockConstants.EvolutionBonus;
-                evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus;
-                evolvedNPC.defense += DigiblockConstants.EvolutionBonus;
+                evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
+                evolvedNPC.physicalDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
+                evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
+                evolvedNPC.defense += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
                 evolvedNPC.CalculateStats();
                 mod.Logger.Debug("Into " + digimon.card.digimon.name);
             }

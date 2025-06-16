@@ -22,9 +22,9 @@ namespace DigiBlock.Content.Digimon
             attribute = Attributes.Vaccine;
             specialAbilities.Add(new Dash(this));
             specialAbilities.Add(new FireBall(this));
-            if (contactDamage == 0)
+            if (physicalDamage == 0)
             {
-                contactDamage = 20;
+                physicalDamage = 20;
                 agility = 25;
                 maxHP = 15;
             }
