@@ -1,6 +1,7 @@
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
+using DigiBlock.Content.Digimon.Ability;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -18,6 +19,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            specialAbilities.Add(new FireBall(this));
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
             contactDamage = 5;

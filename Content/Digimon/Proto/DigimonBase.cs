@@ -111,6 +111,7 @@ namespace DigiBlock.Content.Digimon
             NPC.active = digimon.NPC.active;
             biomeKills = digimon.biomeKills;
             playerOwner = digimon.playerOwner;
+            specialAbilityIndex = digimon.specialAbilityIndex;
         }
 
         public override void OnKill()

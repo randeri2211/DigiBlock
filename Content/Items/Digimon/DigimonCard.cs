@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Terraria.ID;
 using DigiBlock.Common;
 using Microsoft.Xna.Framework;
+using Terraria.ModLoader.IO;
+using DigiBlock.Content.Systems;
 using System;
 
 
@@ -85,7 +87,15 @@ namespace DigiBlock.Content.Items.Digimon
             tag["currentHP"] = digimon.NPC.life;
             tag["maxHP"] = digimon.maxHP;
             tag["defense"] = digimon.defense;
-            // tag["biomeKills"] = digimon.biomeKills;
+            tag["specialIndex"] = digimon.specialAbilityIndex;
+            var biomeKillTag = new TagCompound();
+
+            foreach (var pair in digimon.biomeKills)
+            {
+                biomeKillTag[$"{pair.Key}"] = pair.Value;
+            }
+
+            tag["biomeKills"] = biomeKillTag;
         }
 
         public override void LoadData(Terraria.ModLoader.IO.TagCompound tag)
@@ -131,9 +141,21 @@ namespace DigiBlock.Content.Items.Digimon
             {
                 digimon.defense = tag.GetInt("defense");
             }
-            if (tag.ContainsKey("biomeKills"))
+            if (tag.ContainsKey("specialIndex"))
             {
-                // digimon.biomeKills = tag.Get("");
+                digimon.specialAbilityIndex = tag.GetInt("specialIndex");
+            }
+            digimon.biomeKills = new Dictionary<DigimonSpawnBiome, int>();
+
+            if (tag.TryGet("biomeKills", out TagCompound biomeKillTag))
+            {
+                foreach (var pair in biomeKillTag)
+                {
+                    if (Enum.TryParse(pair.Key, out DigimonSpawnBiome biome))
+                    {
+                        digimon.biomeKills[biome] = biomeKillTag.GetInt(pair.Key);
+                    }
+                }
             }
             digimon.CalculateStats();
         }

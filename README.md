@@ -1,5 +1,10 @@
-# Digimon Mod Idea For Terraria
+- [Digimon Mod Idea For Terraria](#digimon-mod-idea-for-terraria)
+  - [Core Concepts](#core-concepts)
+  - [Accessories](#accessories)
+  - [Items](#items)
+  - [Digimon](#digimon)
 
+# Digimon Mod Idea For Terraria
 ## Core Concepts
 - [x] Digimon damage type(<span style="color:yellow">Digital</span> damage)
 - [x] Digimon will be fighting enemies aswell as other digimon
@@ -26,3 +31,75 @@
 - [ ] HP/Mana disks for the digimon
 - [ ] Byte gives exp(like rare candy)(several byte sizes)
 - [ ] Digimon Special Move Staff(probably not?)
+
+## Digimon
+- [x] Koromon
+- [x] Agumon
+- [x] Greymon
+- [ ] MetalGreymon
+- [ ] WarGreymon
+- [ ] Tsunomon
+- [ ] Gabumon
+- [ ] Garurumon
+- [ ] WereGarurumon
+- [ ] MetalGarurumon
+- [ ] Yokomon
+- [ ] Biyomon
+- [ ] Birdramon
+- [ ] Garudamon
+- [ ] Phoenixmon
+- [ ] Motimon
+- [ ] Tentomon
+- [ ] Kabuterimon
+- [ ] MegaKabuterimon 
+- [ ] HerculesKabuterimon
+- [ ] Tanemon
+- [ ] Palmon
+- [ ] Togemon
+- [ ] Lillymon
+- [ ] Rosemon
+- [ ] MarineAngemon
+- [ ] Bukamon
+- [ ] Gomamon
+- [ ] Ikkakumon
+- [ ] Zudomon
+- [ ] Vikemon
+- [ ] Plesiomon
+- [ ] Aegisdramon
+- [ ] Tokomon
+- [ ] Patamon
+- [ ] Angemon
+- [ ] MagnaAngemon
+- [ ] Seraphimon
+- [ ] Salamon
+- [ ] Gatomon
+- [ ] Angewomon
+- [ ] Ophanimon
+- [ ] Gigimon
+- [ ] Guilmon
+- [ ] Growlmon
+- [ ] WarGrowlmon
+- [ ] Gallantmon
+- [ ] Viximon
+- [ ] Renamon
+- [ ] Kyubimon
+- [ ] Taomon
+- [ ] Sakuyamon
+- [ ] Gummymon
+- [ ] Terriermon
+- [ ] Gargomon
+- [ ] Rapidmon
+- [ ] MegaGargomon
+- [ ] Yaamon
+- [ ] Impmon
+- [ ] Beelzemon
+- [ ] Kokomon
+- [ ] Lopmon
+- [ ] Turuimon
+- [ ] Wendigomon
+- [ ] Antylamon(Good/Evil)
+- [ ] Cherubimon(Good/Evol)
+- [ ] Elecmon
+- [ ] Leomon
+- [ ] Panjyamon
+- [ ] BancheLeomon
