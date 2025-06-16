@@ -87,25 +87,23 @@ namespace DigiBlock.Content.UI
                     button.Width.Set(bDim.X,0f);
                     button.Height.Set(bDim.Y,0f);
                     buttonHeight += bDim.Y;
+                    if (digimonCard.digimon.specialAbilityIndex == i)
+                    {
+                        button.BackgroundColor = Color.CornflowerBlue * 0.8f;
+                        button.BorderColor = Color.LightBlue;
+                    }
+                    else
+                    {
+                        button.BackgroundColor = Color.DarkSlateGray * 0.6f;
+                        button.BorderColor = Color.Gray;
+                    }
+
                     int index = i;
                     button.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
                     {
                         digimonCard.digimon.specialAbilityIndex = index;
                         // Console.WriteLine("" + digimonCard.digimon.specialAbilityIndex);
-                        foreach (UIButton<string> b in buttonList)
-                        {
 
-                            if (b != button)
-                            {
-                                b.BackgroundColor = Color.DarkSlateGray * 0.6f;
-                                b.BorderColor = Color.Gray;
-                            }
-                            else
-                            {
-                                b.BackgroundColor = Color.White * 0.8f;
-                                b.BorderColor = Color.LightGray;
-                            }
-                        }
                     };
 
                     buttonList.Add(button);

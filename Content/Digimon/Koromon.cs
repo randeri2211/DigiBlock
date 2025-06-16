@@ -10,7 +10,7 @@ namespace DigiBlock.Content.Digimon
         {
             base.SetStaticDefaults();
 
-            Main.npcFrameCount[Type] = 3;
+            Main.npcFrameCount[Type] = 4;
             NPCID.Sets.ExtraFramesCount[Type] = 0; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs. This is the remaining frames after the walking frames.
             NPCID.Sets.AttackFrameCount[Type] = 0; // The amount of frames in the attacking animation.
         }
@@ -21,8 +21,8 @@ namespace DigiBlock.Content.Digimon
             attribute = Attributes.None;
             basePhysicalDamage = 5;
             baseAgility = 5;
-            NPC.width = 23;
-            NPC.height = 12;
+            NPC.width = 31;
+            NPC.height = 20;
             baseMaxHP = 10;
             AnimationType = NPCID.Guide;
             base.SetDefaults();

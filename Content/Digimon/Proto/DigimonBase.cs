@@ -66,7 +66,7 @@ namespace DigiBlock.Content.Digimon
         public int level = 1;
         public Evolutions evoStage;
         public Dictionary<DigimonSpawnBiome, int> biomeKills = new Dictionary<DigimonSpawnBiome, int>();
-        public int[] wildLvlRange = { 1, 50 * (Main.hardMode ? 2 : 1) };
+        public int[] wildLvlRange = { 1, 30 * (Main.hardMode ? 2 : 1) };
         private static readonly Random rng = new Random();
 
         public override void SetStaticDefaults()

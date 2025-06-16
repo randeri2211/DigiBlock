@@ -27,9 +27,42 @@ namespace DigiBlock.Content.Digimon
                 if (NPC.velocity.Y == 0)
                 {
                     NPC.velocity.Y = -(float)Math.Sin(45) * moveSpeed;
+                    NPC.velocity.X = Math.Sign(distanceX) * (float)Math.Cos(45) * moveSpeed;
                 }
-                NPC.velocity.X = Math.Sign(distanceX) * (float)Math.Cos(45) * moveSpeed;
+                
             }
+        }
+
+        public override void FindFrame(int frameHeight)
+        {
+            if (NPC.velocity.Y == 0)
+            {
+                // On ground
+                if (Math.Abs(NPC.velocity.X) > 0.1f)
+                {
+                    // Walking or about to jump
+                    NPC.frame.Y = frameHeight * 1; // Frame 1: preparing to jump
+                }
+                else
+                {
+                    NPC.frame.Y = 0; // Frame 0: idle
+                }
+            }
+            else if (NPC.velocity.Y < 0)
+            {
+                // Ascending
+                NPC.frame.Y = frameHeight * 2; // Frame 2
+            }
+            else
+            {
+                // Descending
+                NPC.frame.Y = frameHeight * 3; // Frame 3
+            }
+        }
+
+        public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+        {
+
         }
     }
 }

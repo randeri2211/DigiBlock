@@ -13,7 +13,7 @@ namespace DigiBlock.Content.Digimon.Ability
         public Dash(DigimonBase digimon) : base(digimon)
         {
             coolDown = 300;
-            this.tooltip = "Dash speed scales with agility\nDamage scales 100% Special Attack";
+            tooltip = "Dash speed scales with agility\nDamage scales 100% Special Attack";
         }
 
         public override void Use(int damage)
