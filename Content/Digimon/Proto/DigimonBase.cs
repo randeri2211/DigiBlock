@@ -96,6 +96,10 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            if (specialAbilities.Count > 0)
+            {
+                specialAbilityIndex = rng.Next(specialAbilities.Count);
+            }
             physicalDamage = basePhysicalDamage;
             specialDamage = baseSpecialDamage;
             agility = baseAgility;
