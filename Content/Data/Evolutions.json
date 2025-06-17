@@ -20,5 +20,13 @@
                 "Level": 16
             } 
         }
+    ],
+    "Greymon": [
+        {
+            "Evolution": "MetalGreymon",
+            "Conditions": {
+                "Level": 36
+            }
+        }
     ]
 }

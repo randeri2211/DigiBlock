@@ -11,9 +11,10 @@ namespace DigiBlock.Content.Digimon
         {
             base.SetStaticDefaults();
 
-            Main.npcFrameCount[Type] = 3;
+            Main.npcFrameCount[Type] = 4;
             NPCID.Sets.ExtraFramesCount[Type] = 0; // Generally for Town NPCs, but this is how the NPC does extra things such as sitting in a chair and talking to other NPCs. This is the remaining frames after the walking frames.
             NPCID.Sets.AttackFrameCount[Type] = 0; // The amount of frames in the attacking animation.
+            
         }
 
         public override void SetDefaults()
@@ -22,11 +23,12 @@ namespace DigiBlock.Content.Digimon
             specialAbilities.Add(new FireBall(this));
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
-            basePhysicalDamage = 5;
-            baseAgility = 5;
+            basePhysicalDamage = 20;
+            baseSpecialDamage = 20;
+            baseAgility = 10;
             NPC.width = 32;
             NPC.height = 32;
-            baseMaxHP = 10;
+            baseMaxHP = 50;
             base.SetDefaults();
         }
     }

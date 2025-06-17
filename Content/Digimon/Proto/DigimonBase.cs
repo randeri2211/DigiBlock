@@ -49,6 +49,8 @@ namespace DigiBlock.Content.Digimon
 
         public List<DigiAbility> specialAbilities = new List<DigiAbility>();
         public int specialAbilityIndex;
+        private int diskCooldown = 300; // 5 seconds
+        private int currentDiskCooldown = 0;
 
         // Stats
         public int basePhysicalDamage;
@@ -270,7 +272,7 @@ namespace DigiBlock.Content.Digimon
         {
             if (playerOwner != null)
             {
-                float lifePercent = NPC.lifeMax / NPC.life;
+                float lifePercent = NPC.life / NPC.lifeMax;
                 NPC.lifeMax = (int)(maxHP * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonMaxHPPercent);
                 NPC.life = (int)(NPC.lifeMax * lifePercent);
                 NPC.defense = (int)(defense * playerOwner.GetModPlayer<DigiBlockPlayer>().digimonDefensePercent);
@@ -401,7 +403,6 @@ namespace DigiBlock.Content.Digimon
                 agility += DigiblockConstants.LevelUpBonus * (int)evoStage;
                 maxHP += DigiblockConstants.LevelUpBonus * DigiblockConstants.HPLevelUpBonusMultiplier * (int)evoStage;
                 physicalDamage += DigiblockConstants.LevelUpBonus * (int)evoStage;
-                Console.WriteLine((int)evoStage);
                 specialDamage += DigiblockConstants.LevelUpBonus * (int)evoStage;
                 defense += DigiblockConstants.LevelUpBonus * (int)evoStage;
                 CalculateStats();
@@ -518,16 +519,24 @@ namespace DigiBlock.Content.Digimon
 
         private void useDisks()
         {
-            if (NPC.active && card.digivice.disk.ModItem is Disk disk)
+            if (currentDiskCooldown == 0)
             {
-                if (disk is HPDisk hpDisk && NPC.life <= NPC.lifeMax - hpDisk.healAmount)
+                if (NPC.active && card.digivice.disk.ModItem is Disk disk)
                 {
-                    hpDisk.Use();
+                    if (disk is HPDisk hpDisk && NPC.life <= NPC.lifeMax - hpDisk.healAmount)
+                    {
+                        hpDisk.Use();
+                        currentDiskCooldown = diskCooldown;
+                    }
+                    else if (disk is EXPDisk expDisk)
+                    {
+                        expDisk.Use();
+                    }
                 }
-                else if (disk is EXPDisk expDisk)
-                {
-                    expDisk.Use();
-                }
+            }
+            else
+            {
+                currentDiskCooldown--;
             }
         }
         public void useDisk()

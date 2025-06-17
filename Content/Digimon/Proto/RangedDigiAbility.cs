@@ -26,7 +26,7 @@ namespace DigiBlock.Content.Digimon.Ability
                     digimon.NPC.GetSource_FromAI(),
                     digimon.NPC.Center,
                     velocity,
-                    projectileType, // Replace with your custom projectile if needed
+                    projectileType,
                     damage,
                     1f,
                     Main.myPlayer
@@ -34,7 +34,7 @@ namespace DigiBlock.Content.Digimon.Ability
 
                 if (Main.projectile.IndexInRange(projID))
                 {
-                    FireballProjectile proj = Main.projectile[projID].ModProjectile as FireballProjectile;
+                    ProjectileBase proj = Main.projectile[projID].ModProjectile as ProjectileBase;
                     if (proj != null)
                     {
                         proj.digimon = digimon;

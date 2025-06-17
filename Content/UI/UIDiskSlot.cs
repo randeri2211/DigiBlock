@@ -47,7 +47,6 @@ namespace DigiBlock.Content.UI
                     // Case: Removed
                     if (!wasAir && isAir)
                     {
-                        Console.WriteLine("item " + digivice.disk.ToString() + "last item" + lastItem.ToString());
                         removeDisk(lastItem);
                     }
                     // Case: Inserted

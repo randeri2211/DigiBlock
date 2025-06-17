@@ -178,6 +178,8 @@ namespace DigiBlock.Content.Systems
                 digimon.card.setDigimonNpcType(etype, false);
                 evolvedNPC.copyData(digimon);
                 evolvedNPC.level = 1;
+                evolvedNPC.CheckLevelUp();
+                evolvedNPC.biomeKills = new Dictionary<DigimonSpawnBiome, int>();
                 evolvedNPC.maxEXP = DigiblockConstants.StartingEXP;
                 evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
                 evolvedNPC.physicalDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;

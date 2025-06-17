@@ -97,6 +97,7 @@ Mods: {
 			DigimonBase.DisplayName: Digimon Base
 			Greymon.DisplayName: Greymon
 			Koromon.DisplayName: Koromon
+			MetalGreymon.DisplayName: Metal Greymon
 		}
 
 		DamageClasses.DigitalDamage.DisplayName: Digital Damage
@@ -109,6 +110,7 @@ Mods: {
 		Projectiles: {
 			DigiFireballProjectile.DisplayName: Digi Fireball Projectile
 			FireballProjectile.DisplayName: Fireball Projectile
+			ChestMissile.DisplayName: Chest Missile
 		}
 	}
 }

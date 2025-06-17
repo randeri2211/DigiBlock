@@ -12,6 +12,7 @@ namespace DigiBlock.Content.Digimon.Ability
 
         public Dash(DigimonBase digimon) : base(digimon)
         {
+            name = "Dash";
             coolDown = 300;
             tooltip = "Dash speed scales with agility\nDamage scales 100% Special Attack";
         }

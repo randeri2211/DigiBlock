@@ -113,7 +113,6 @@ namespace DigiBlock.Content.Items.Digimon
                     }
                 }
             }
-            Console.WriteLine("checked players");
             return false;
         }
         

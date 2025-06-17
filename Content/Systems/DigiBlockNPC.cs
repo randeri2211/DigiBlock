@@ -49,8 +49,11 @@ namespace DigiBlock.Content.Systems
                     expAmount = (Main.hardMode ? 2 : 1) * 10;
                 }
 
-                victim.lastHitByDigimon.GiveEXP((int)(expAmount * victim.lastHitByDigimon.playerOwner.GetModPlayer<DigiBlockPlayer>().digimonEXPPercent));
-
+                if (victim.lastHitByDigimon.playerOwner != null)
+                {
+                    victim.lastHitByDigimon.GiveEXP((int)(expAmount * victim.lastHitByDigimon.playerOwner.GetModPlayer<DigiBlockPlayer>().digimonEXPPercent));
+                }
+                
                 //Handle biome kill count
                 if (victim.SpawnBiome == DigimonSpawnBiome.Unknown)
                 {

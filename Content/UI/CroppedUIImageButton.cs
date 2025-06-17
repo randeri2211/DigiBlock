@@ -50,7 +50,6 @@ namespace DigiBlock.Content.UI
                 {
                     textConditions += condition.Name + ":" + condition.Value.ToString() + "\n";
                 }
-                Console.WriteLine(textConditions);
                 Vector2 pos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
                 Utils.DrawBorderString(Main.spriteBatch, textConditions, pos, Color.White);
             }

@@ -1,6 +1,7 @@
 using Terraria;
 using System;
 using DigiBlock.Common;
+using Terraria.ID;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -13,15 +14,17 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            AnimationType = NPCID.Zombie;
             base.SetDefaults();
         }
 
         public override void Move()
         {
-            float moveSpeed = agility * DigiblockConstants.AgilityMoveSpeedMultiplier; // walking speed
+            // float moveSpeed = agility * DigiblockConstants.AgilityMoveSpeedMultiplier; // walking speed
+            float moveSpeed = 2f + agility * DigiblockConstants.AgilityMoveSpeedMultiplier;
             if (wildTarget != null && wildTarget.active)
             {
-                
+
                 float distanceX = wildTarget.Center.X - NPC.Center.X;
 
                 // Apply velocity towards target

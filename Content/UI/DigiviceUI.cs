@@ -77,7 +77,7 @@ namespace DigiBlock.Content.UI
                 for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
                 {
                     DigiAbility ability = digimonCard.digimon.specialAbilities[i];
-                    UIButton<string> button = new UIButton<string>(ability.GetType().Name);
+                    UIButton<string> button = new UIButton<string>(ability.name);
                     // button.TooltipText = true;
                     button.HoverText = ability.tooltip;
                     button.AltHoverText = ability.tooltip;

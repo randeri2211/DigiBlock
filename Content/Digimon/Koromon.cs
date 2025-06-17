@@ -19,11 +19,12 @@ namespace DigiBlock.Content.Digimon
         {
             evoStage = Evolutions.InTraining;
             attribute = Attributes.None;
-            basePhysicalDamage = 5;
-            baseAgility = 5;
+            basePhysicalDamage = 10;
+            baseSpecialDamage = 5;
+            baseAgility = 10;
             NPC.width = 31;
             NPC.height = 20;
-            baseMaxHP = 10;
+            baseMaxHP = 25;
             AnimationType = NPCID.Guide;
             base.SetDefaults();
         }
