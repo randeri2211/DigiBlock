@@ -16,7 +16,7 @@ namespace DigiBlock.Content.Systems
     public class EvolutionSystem : ModSystem
     {
         public JsonDocument evolutions;
-        private List<EvolutionEffect> activeAnimations = new();
+        private List<EvolutionEffect> activeAnimations = new List<EvolutionEffect>();
         public override void OnModLoad()
         {
             // Open the csv file for all the evolutions
@@ -38,7 +38,7 @@ namespace DigiBlock.Content.Systems
         public override void PreUpdateNPCs()
         {
             // Evolution Loop
-            CheckEvolutions();
+            // CheckEvolutions();
 
 
             // Animation Loop
@@ -153,6 +153,10 @@ namespace DigiBlock.Content.Systems
 
         public void TriggerEvolution(DigimonBase digimon, string evolutionName)
         {
+            if (digimon.evolving)
+            {
+                return;
+            }
             digimon.evolving = true;
             Mod mod = ModContent.GetInstance<DigiBlock>();
             if (mod.Find<ModNPC>(evolutionName) is DigimonBase evolved)
@@ -179,12 +183,13 @@ namespace DigiBlock.Content.Systems
                 evolvedNPC.copyData(digimon);
                 evolvedNPC.level = 1;
                 evolvedNPC.CheckLevelUp();
+                int statMultiplier = (digimon.evoStage < evolvedNPC.evoStage) ? (int)evolvedNPC.evoStage : -(int)digimon.evoStage;
                 evolvedNPC.biomeKills = new Dictionary<DigimonSpawnBiome, int>();
                 evolvedNPC.maxEXP = DigiblockConstants.StartingEXP;
-                evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
-                evolvedNPC.physicalDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
-                evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
-                evolvedNPC.defense += DigiblockConstants.EvolutionBonus * (int)evolvedNPC.evoStage;
+                evolvedNPC.maxHP += DigiblockConstants.EvolutionBonus * statMultiplier;
+                evolvedNPC.physicalDamage += DigiblockConstants.EvolutionBonus * statMultiplier;
+                evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus * statMultiplier;
+                evolvedNPC.defense += DigiblockConstants.EvolutionBonus * statMultiplier;
                 evolvedNPC.CalculateStats();
                 mod.Logger.Debug("Into " + digimon.card.digimon.name);
             }

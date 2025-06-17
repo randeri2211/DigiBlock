@@ -430,10 +430,6 @@ namespace DigiBlock.Content.Digimon
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (immune)
-            {
-                return false;
-            }
             return !NPC.friendly;
         }
 

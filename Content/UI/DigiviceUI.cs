@@ -7,6 +7,8 @@ using DigiBlock.Content.Items.Digimon;
 using System.Collections.Generic;
 using Terraria.ModLoader.UI;
 using DigiBlock.Content.Digimon.Ability;
+using Terraria.ModLoader;
+using DigiBlock.Content.Systems;
 
 
 namespace DigiBlock.Content.UI
@@ -18,8 +20,11 @@ namespace DigiBlock.Content.UI
         private float defaultPanelWidth = 100f;
         private float defaultPanelHeight = 100f;
         private List<UIButton<string>> buttonList = new List<UIButton<string>>();
+        UIButton<string> evoButton;
         private UIDiskSlot diskSlot;
         UIText dataUI;
+        internal UserInterface EvolutionGraphUIInterface;
+
         public override void OnInitialize()
         {
             panel = new UIDraggablePanel();
@@ -30,6 +35,8 @@ namespace DigiBlock.Content.UI
             panel.Width.Set(defaultPanelWidth, 0f);
             panel.Height.Set(defaultPanelHeight, 0f);
             Append(panel);
+
+            EvolutionGraphUIInterface = ModContent.GetInstance<EvolutionGraphUISystem>().EvolutionGraphUIInterface;
         }
 
         public override void Update(GameTime gameTime)
@@ -51,69 +58,44 @@ namespace DigiBlock.Content.UI
                     initDiskSlot();
                 }
 
-                string text = "";
-                text += "Name: " + digimonCard.digimon.name + "\n";
-                text += "Level: " + digimonCard.digimon.level + "\n";
-                text += "HP: " + digimonCard.digimon.NPC.life + "/" + digimonCard.digimon.NPC.lifeMax + "\n";
-                text += "Exp: " + digimonCard.digimon.getEXP() + "/" + digimonCard.digimon.maxEXP + "\n";
-                text += "Contact Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.physicalDamage) + "\n";
-                text += "Special Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.specialDamage) + "\n";
-                text += "Agility: " + digimonCard.digimon.agility + "\n";
-                text += "Defense: " + digimonCard.digimon.NPC.defense + "\n";
-                text += "Digimon Type: " + digimonCard.digimon.Name + "\n";
-                text += "Digimon Attribute: " + digimonCard.digimon.attribute + "\n";
-                foreach (var biome in digimonCard.digimon.biomeKills.Keys)
-                {
-                    text += biome + ": " + digimonCard.digimon.biomeKills[biome] + "\n";
-                }
-                dataUI = new UIText(text);
-                dataUI.Top.Set(cardSlot.GetDimensions().Height + cardSlot.Top.Pixels, 0f);
-                panel.Append(dataUI);
+                // Data on the digimon
+                string text = initText(digimonCard);
 
                 Vector2 textSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
                 float padding = panel.PaddingLeft + panel.PaddingRight;
 
+                // Special ability buttons
                 float buttonHeight = 0;
                 for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
                 {
-                    DigiAbility ability = digimonCard.digimon.specialAbilities[i];
-                    UIButton<string> button = new UIButton<string>(ability.name);
-                    // button.TooltipText = true;
-                    button.HoverText = ability.tooltip;
-                    button.AltHoverText = ability.tooltip;
-                    button.Top.Set(buttonHeight + textSize.Y + dataUI.Top.Pixels - panel.PaddingBottom - panel.PaddingTop, 0f);
-                    // button.Left.Set(panel.PaddingLeft, 0f);
-                    Vector2 bDim = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(button.HoverText);
-                    button.Width.Set(bDim.X,0f);
-                    button.Height.Set(bDim.Y,0f);
-                    buttonHeight += bDim.Y;
-                    if (digimonCard.digimon.specialAbilityIndex == i)
-                    {
-                        button.BackgroundColor = Color.CornflowerBlue * 0.8f;
-                        button.BorderColor = Color.LightBlue;
-                    }
-                    else
-                    {
-                        button.BackgroundColor = Color.DarkSlateGray * 0.6f;
-                        button.BorderColor = Color.Gray;
-                    }
-
-                    int index = i;
-                    button.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
-                    {
-                        digimonCard.digimon.specialAbilityIndex = index;
-                        // Console.WriteLine("" + digimonCard.digimon.specialAbilityIndex);
-
-                    };
-
-                    buttonList.Add(button);
-                    panel.Append(button);
-                    button.Recalculate();
+                    buttonHeight = initSpecialAbilityButton(digimonCard, i, buttonHeight, textSize.Y);
                 }
 
-                // Console.WriteLine("button height: " + buttonHeight);
-                
+                // Evolution Graph button
+                if (evoButton == null)
+                {
+                    evoButton = new UIButton<string>("Digivolutions");
+                    Vector2 evoTextSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(evoButton.Text);
+                    evoButton.Width.Set(evoTextSize.X, 0f);
+                    evoButton.Height.Set(evoTextSize.Y, 0f);
+                    evoButton.Left.Set(-evoTextSize.X, 1.0f);
+                    evoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+                    {
+                        Console.WriteLine("clicked");
 
+                        if (EvolutionGraphUIInterface.CurrentState != null)
+                        {
+                            EvolutionGraphUIInterface.SetState(null);
+                        }
+                        EvolutionGraphUI evoGraphUI = new EvolutionGraphUI();
+                        evoGraphUI.digivice = cardSlot.digivice;
+                        EvolutionGraphUIInterface.SetState(evoGraphUI);
+                        ModContent.GetInstance<EvolutionGraphUISystem>().setVisible(true);
+                        evoGraphUI.SearchGraph(digimonCard.digimon.name);
+                    };
+                    panel.Append(evoButton);
+                }
+                
                 panel.Width.Set(Math.Max(textSize.X + padding, defaultPanelWidth), 0f);
                 panel.Height.Set(cardSlot.Top.Pixels + cardSlot.GetInnerDimensions().Height + textSize.Y + buttonHeight, 0f);
                 dataUI.Recalculate();
@@ -132,6 +114,12 @@ namespace DigiBlock.Content.UI
                     panel.Width.Set(defaultPanelWidth, 0f);
                     panel.Height.Set(defaultPanelHeight, 0f);
                 }
+                if (evoButton != null)
+                {
+                    panel.RemoveChild(evoButton);
+                    evoButton = null;
+                }
+                
             }
         }
 
@@ -153,6 +141,65 @@ namespace DigiBlock.Content.UI
             diskSlot.Left.Set(-diskSlot.Width.Pixels / 2 + panel.PaddingLeft, 0.5f);
             diskSlot.Top.Set(0f, 0f);
             panel.Append(diskSlot);
+        }
+
+        private string initText(DigimonCard digimonCard)
+        {
+            string text = "";
+            text += "Name: " + digimonCard.digimon.name + "\n";
+            text += "Level: " + digimonCard.digimon.level + "\n";
+            text += "HP: " + digimonCard.digimon.NPC.life + "/" + digimonCard.digimon.NPC.lifeMax + "\n";
+            text += "Exp: " + digimonCard.digimon.getEXP() + "/" + digimonCard.digimon.maxEXP + "\n";
+            text += "Contact Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.physicalDamage) + "\n";
+            text += "Special Digital Damage: " + digimonCard.digimon.CalculateDamage(digimonCard.digimon.specialDamage) + "\n";
+            text += "Agility: " + digimonCard.digimon.agility + "\n";
+            text += "Defense: " + digimonCard.digimon.NPC.defense + "\n";
+            text += "Digimon Type: " + digimonCard.digimon.Name + "\n";
+            text += "Digimon Attribute: " + digimonCard.digimon.attribute + "\n";
+            foreach (var biome in digimonCard.digimon.biomeKills.Keys)
+            {
+                text += biome + ": " + digimonCard.digimon.biomeKills[biome] + "\n";
+            }
+            dataUI = new UIText(text);
+            dataUI.Top.Set(cardSlot.GetDimensions().Height + cardSlot.Top.Pixels, 0f);
+            panel.Append(dataUI);
+            return text;
+        }
+
+        private float initSpecialAbilityButton(DigimonCard digimonCard, int i, float buttonHeight, float textHeight)
+        {
+            DigiAbility ability = digimonCard.digimon.specialAbilities[i];
+            UIButton<string> button = new UIButton<string>(ability.name);
+            // button.TooltipText = true;
+            button.HoverText = ability.tooltip;
+            button.AltHoverText = ability.tooltip;
+            button.Top.Set(buttonHeight + textHeight + dataUI.Top.Pixels - panel.PaddingBottom - panel.PaddingTop, 0f);
+            // button.Left.Set(panel.PaddingLeft, 0f);
+            Vector2 bDim = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(button.HoverText);
+            button.Width.Set(bDim.X, 0f);
+            button.Height.Set(bDim.Y, 0f);
+            buttonHeight += bDim.Y;
+            if (digimonCard.digimon.specialAbilityIndex == i)
+            {
+                button.BackgroundColor = Color.CornflowerBlue * 0.8f;
+                button.BorderColor = Color.LightBlue;
+            }
+            else
+            {
+                button.BackgroundColor = Color.DarkSlateGray * 0.6f;
+                button.BorderColor = Color.Gray;
+            }
+
+            int index = i;
+            button.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+            {
+                digimonCard.digimon.specialAbilityIndex = index;
+            };
+
+            buttonList.Add(button);
+            panel.Append(button);
+            button.Recalculate();
+            return buttonHeight;
         }
 
         public Item GetDigiviceItem()

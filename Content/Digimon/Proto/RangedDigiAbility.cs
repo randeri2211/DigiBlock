@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using DigiBlock.Content.Projectiles;
+using System;
 
 namespace DigiBlock.Content.Digimon.Ability
 {
@@ -29,7 +30,7 @@ namespace DigiBlock.Content.Digimon.Ability
                     projectileType,
                     damage,
                     1f,
-                    Main.myPlayer
+                    255
                 );
 
                 if (Main.projectile.IndexInRange(projID))
@@ -38,6 +39,9 @@ namespace DigiBlock.Content.Digimon.Ability
                     if (proj != null)
                     {
                         proj.digimon = digimon;
+                        proj.Projectile.friendly = digimon.NPC.friendly;
+                        proj.Projectile.hostile = !digimon.NPC.friendly;
+                        Console.WriteLine("proj friendly " + proj.Projectile.friendly);
                     }
                 }
             }

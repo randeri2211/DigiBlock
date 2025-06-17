@@ -18,7 +18,6 @@ namespace DigiBlock.Content.Projectiles
 
         public override bool? CanHitNPC(NPC target)
         {
-            Console.WriteLine("digimon is " + digimon);
             return target.friendly != digimon.NPC.friendly;
         }
 
@@ -29,5 +28,12 @@ namespace DigiBlock.Content.Projectiles
                 globalTarget.lastHitByDigimon = digimon;
             }
         }
+
+        public override bool CanHitPlayer(Player target)
+        {
+            return !digimon.NPC.friendly;
+        }
+
+        
     }
 }

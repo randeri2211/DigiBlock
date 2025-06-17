@@ -10,6 +10,8 @@ using DigiBlock.Content.Systems;
 using System.Text.Json;
 using Terraria.ModLoader.UI;
 using Microsoft.Xna.Framework.Graphics;
+using DigiBlock.Content.Items.Digimon;
+using DigiBlock.Content.Digimon;
 
 namespace DigiBlock.Content.UI
 {
@@ -25,6 +27,7 @@ namespace DigiBlock.Content.UI
         Dictionary<ModNPC, JsonElement> evolutions;
         List<ModNPC> devolutions;
         ModNPC searchDigimon;
+        public Digivice digivice = null;
         public override void OnInitialize()
         {
             panel = new UIDraggablePanel();
@@ -38,7 +41,7 @@ namespace DigiBlock.Content.UI
             panel.Append(label);
             panelWidth = Math.Max(label.GetDimensions().Width + panel.PaddingLeft + panel.PaddingRight, panelWidth);
             panel.Width.Set(panelWidth, 0f);
-            
+
 
             searchTextBox = new UITextBox("");
             searchTextBox.SetPadding(5);
@@ -57,7 +60,7 @@ namespace DigiBlock.Content.UI
             base.Update(gameTime);
         }
 
-        private void SearchGraph(string digimonName)
+        public void SearchGraph(string digimonName)
         {
             Mod mod = ModContent.GetInstance<DigiBlock>();
             string correctName = digimonName.Length > 0 ? char.ToUpper(digimonName[0]) + digimonName.Substring(1).ToLower() : digimonName;
@@ -143,7 +146,6 @@ namespace DigiBlock.Content.UI
                 int counter = 0;
                 foreach (var evo in evolutions.Keys)
                 {
-                    Console.WriteLine("evolution"+evo.Name);
                     var textureBase = ModContent.Request<Texture2D>(evo.Texture);
                     CroppedUIImageButton evoButton = new CroppedUIImageButton(textureBase, evo.NPC.width, evo.NPC.height, evolutions[evo]);
 
@@ -156,7 +158,23 @@ namespace DigiBlock.Content.UI
 
                     evoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
                     {
-                        SearchGraph(evo.Name);
+                        if (digivice == null)
+                        {
+                            SearchGraph(evo.Name);
+                        }
+                        else
+                        {
+                            EvolutionSystem evoSystem = ModContent.GetInstance<EvolutionSystem>();
+                            DigimonBase digimon = (digivice.card.ModItem as DigimonCard).digimon;
+                            if (evoSystem.CanEvolve(digimon, evolutions[evo]))
+                            {
+                                evoSystem.TriggerEvolution(digimon, evo.Name);
+                            }
+                            else
+                            {
+                                Main.NewText("Cant Evolve to " + evo.Name);
+                            }
+                        }
                     };
 
                     panel.Append(evoButton);
@@ -196,7 +214,16 @@ namespace DigiBlock.Content.UI
 
                     devoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
                     {
-                        SearchGraph(devo.Name);
+                        if (digivice == null)
+                        {
+                            SearchGraph(devo.Name);
+                        }
+                        else
+                        {
+                            EvolutionSystem evoSystem = ModContent.GetInstance<EvolutionSystem>();
+                            DigimonBase digimon = (digivice.card.ModItem as DigimonCard).digimon;
+                            evoSystem.TriggerEvolution(digimon, devo.Name);
+                        }
                     };
 
                     panel.Append(devoButton);

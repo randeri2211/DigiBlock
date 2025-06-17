@@ -13,7 +13,6 @@ namespace DigiBlock.Content.Projectiles
         {
             Projectile.width = 16;
             Projectile.height = 16;
-            Projectile.friendly = true;
             Projectile.penetrate = 1;
             base.SetDefaults();
         }
