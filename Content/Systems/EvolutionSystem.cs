@@ -60,7 +60,6 @@ namespace DigiBlock.Content.Systems
                     {
                         string[] fullName = digimon.GetType().ToString().Split('.');
                         string digimonName = fullName[fullName.Length - 1];
-                        // Console.WriteLine($"{digimonName} {digimon.NPC.life}");
                         if (evolutions.RootElement.TryGetProperty(digimonName, out JsonElement digivolutions))
                         {
                             foreach (var digiv in digivolutions.EnumerateArray())
@@ -70,7 +69,6 @@ namespace DigiBlock.Content.Systems
 
                                 if (CanEvolve(digimon, conditions))
                                 {
-                                    mod.Logger.Info("can evolve");
                                     TriggerEvolution(digimon, evolutionName);
                                 }
                             }
@@ -177,7 +175,6 @@ namespace DigiBlock.Content.Systems
             int newNpcId = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, etype);
             if (Main.npc[newNpcId].ModNPC is DigimonBase evolvedNPC && evolvedNPC.NPC.active)
             {
-                mod.Logger.Debug("Evolving " + digimon.card.digimon.name);
                 digimon.card.digimon = evolvedNPC;
                 digimon.card.setDigimonNpcType(etype, false);
                 evolvedNPC.copyData(digimon);
@@ -191,7 +188,6 @@ namespace DigiBlock.Content.Systems
                 evolvedNPC.specialDamage += DigiblockConstants.EvolutionBonus * statMultiplier;
                 evolvedNPC.defense += DigiblockConstants.EvolutionBonus * statMultiplier;
                 evolvedNPC.CalculateStats();
-                mod.Logger.Debug("Into " + digimon.card.digimon.name);
             }
             digimon.justEvolved = true;
 
@@ -201,7 +197,6 @@ namespace DigiBlock.Content.Systems
             npc.netSkip = -1;
             npc.netUpdate = true;
 
-            mod.Logger.Info("Done Evolving");
             CombatText.NewText(npc.Hitbox, Color.Orange, $"{digimon.Name}!" + npc.active + npc.life);
         }
 

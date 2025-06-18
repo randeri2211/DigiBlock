@@ -10,7 +10,7 @@
 - [x] Digimon will be fighting enemies aswell as other digimon
 - [x] Dynamic evolution animation copying the Digimon Tamers evolution animation!
 - [x] Digimon are items, spawned to the world through the digivice
-- [ ] Digimon can devolve into all the forms that can evolve into it
+- [x] Digimon can devolve into all the forms that can evolve into it
 - [x] Make an evolution graph to travel for evolutions maybe?(hold adjecency matrix to see both sides of evolution and devolution seperately and easily?)
 - [x] Digimon killing digimon or monsters gives exp to the digimon
 - [x] Digimon Attributes(Vaccine/Virus/Data/None)
@@ -32,7 +32,7 @@
 - [x] Koromon
 - [x] Agumon
 - [x] Greymon
-- [ ] MetalGreymon
+- [x] MetalGreymon
 - [ ] WarGreymon
 - [ ] Tsunomon
 - [ ] Gabumon

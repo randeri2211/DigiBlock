@@ -107,7 +107,6 @@ namespace DigiBlock.Content.Digimon
             maxHP = baseMaxHP;
             // Level up to random level by range
             int l = rng.Next(wildLvlRange[0], wildLvlRange[1]);
-            // Console.WriteLine("leveling up to" + l + "max is "+wildLvlRange[1]);
             for (int i = level; i < l; i++)
             {
                 GiveEXP(maxEXP);
@@ -193,7 +192,6 @@ namespace DigiBlock.Content.Digimon
             // Targeting
             if (wildTarget == null)
             {
-                // Console.WriteLine("Aiming: ");
                 if (NPC.friendly)
                 {
                     TargetHostileNPC();
@@ -206,7 +204,6 @@ namespace DigiBlock.Content.Digimon
 
             if (wildTarget != null)
             {
-                // Console.WriteLine("Targeting: " + wildTarget);
                 // Turn towards the target
                 if (wildTarget.Center.X > NPC.Center.X)
                 {
@@ -550,7 +547,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            string tooltip = $"LV: {level} {attribute}";
+            string tooltip = $"Lvl: {level} {attribute}";
             Vector2 position = NPC.Top - screenPos ; // 30 pixels above head
             Color color = Color.White;
             switch (attribute)

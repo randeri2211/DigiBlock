@@ -41,7 +41,6 @@ namespace DigiBlock.Content.Digimon.Ability
                         proj.digimon = digimon;
                         proj.Projectile.friendly = digimon.NPC.friendly;
                         proj.Projectile.hostile = !digimon.NPC.friendly;
-                        Console.WriteLine("proj friendly " + proj.Projectile.friendly);
                     }
                 }
             }

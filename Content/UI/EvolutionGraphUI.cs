@@ -63,41 +63,39 @@ namespace DigiBlock.Content.UI
         public void SearchGraph(string digimonName)
         {
             Mod mod = ModContent.GetInstance<DigiBlock>();
-            string correctName = digimonName.Length > 0 ? char.ToUpper(digimonName[0]) + digimonName.Substring(1).ToLower() : digimonName;
-            Console.WriteLine("searching for  " + correctName);
             var allEvolutions = ModContent.GetInstance<EvolutionSystem>().evolutions;
             Dictionary<ModNPC, JsonElement> tempEvolutions = new Dictionary<ModNPC, JsonElement>();
             List<ModNPC> tempDevolutions = new List<ModNPC>();
-            if (allEvolutions.RootElement.TryGetProperty(correctName, out JsonElement digivolutions))
-            {
-                searchDigimon = mod.Find<ModNPC>(correctName);
-                foreach (var digiv in digivolutions.EnumerateArray())
-                {
-                    Console.WriteLine("adding  " + digiv.GetProperty("Evolution").GetString());
-                    tempEvolutions.Add(mod.Find<ModNPC>(digiv.GetProperty("Evolution").GetString()), digiv.GetProperty("Conditions"));
-                    Console.WriteLine("added");
-                }
-            }
+
             foreach (var digimon in allEvolutions.RootElement.EnumerateObject())
             {
+                // Evolutions
+                if (digimon.Name.ToLower() == digimonName.ToLower())
+                {
+                    searchDigimon = mod.Find<ModNPC>(digimon.Name);
+                    foreach (var digiv in digimon.Value.EnumerateArray())
+                    {
+                        tempEvolutions.Add(mod.Find<ModNPC>(digiv.GetProperty("Evolution").GetString()), digiv.GetProperty("Conditions"));
+                    }
+                }
+
+                // Devolutions
                 foreach (var digiv in digimon.Value.EnumerateArray())
                 {
-                    if (digiv.GetProperty("Evolution").GetString() == correctName)
+                    string evoName = digiv.GetProperty("Evolution").GetString();
+                    if (evoName.ToLower() == digimonName.ToLower())
                     {
                         if (searchDigimon == null)
                         {
-                            searchDigimon = mod.Find<ModNPC>(correctName);
+                            searchDigimon = mod.Find<ModNPC>(evoName);
                         }
-                        Console.WriteLine("adding  devolution " + digimon.Name);
                         tempDevolutions.Add(mod.Find<ModNPC>(digimon.Name));
-                        Console.WriteLine("added");
                     }
                 }
             }
 
             if (tempEvolutions.Count > 0)
             {
-                Console.WriteLine("swapping evolutions");
                 evolutions = tempEvolutions;
             }
             else
@@ -106,7 +104,6 @@ namespace DigiBlock.Content.UI
             }
             if (tempDevolutions.Count > 0)
             {
-                Console.WriteLine("swapping devolutions");
                 devolutions = tempDevolutions;
             }
             else
@@ -135,7 +132,6 @@ namespace DigiBlock.Content.UI
                 }
                 foreach (UIElement element in toRemove)
                 {
-                    Console.WriteLine("removing");
                     panel.RemoveChild(element);
                 }
 
@@ -168,11 +164,11 @@ namespace DigiBlock.Content.UI
                             DigimonBase digimon = (digivice.card.ModItem as DigimonCard).digimon;
                             if (evoSystem.CanEvolve(digimon, evolutions[evo]))
                             {
-                                evoSystem.TriggerEvolution(digimon, evo.Name);
+                                TriggerEvolution(digimon, evo.Name);
                             }
                             else
                             {
-                                Main.NewText("Cant Evolve to " + evo.Name);
+                                Main.NewText("Can't Evolve to " + evo.Name);
                             }
                         }
                     };
@@ -201,7 +197,6 @@ namespace DigiBlock.Content.UI
                 int counter = 0;
                 foreach (var devo in devolutions)
                 {
-                    Console.WriteLine("devolution" + devo.Name);
                     var textureBase = ModContent.Request<Texture2D>(devo.Texture);
                     CroppedUIImageButton devoButton = new CroppedUIImageButton(textureBase, devo.NPC.width, devo.NPC.height);
                     float textureWidth = textureBase.Width();
@@ -220,9 +215,8 @@ namespace DigiBlock.Content.UI
                         }
                         else
                         {
-                            EvolutionSystem evoSystem = ModContent.GetInstance<EvolutionSystem>();
                             DigimonBase digimon = (digivice.card.ModItem as DigimonCard).digimon;
-                            evoSystem.TriggerEvolution(digimon, devo.Name);
+                            TriggerEvolution(digimon, devo.Name);
                         }
                     };
 
@@ -230,6 +224,42 @@ namespace DigiBlock.Content.UI
                     counter++;
                 }
             }
+        }
+
+        public void TriggerEvolution(DigimonBase digimon, string name)
+        {
+            EvolutionSystem evoSystem = ModContent.GetInstance<EvolutionSystem>();
+            UIPanel popUpPanel = new UIDraggablePanel();
+            popUpPanel.Top.Set(panel.Top.Pixels, 0f);
+            popUpPanel.Left.Set(panel.Width.Pixels, 0f);
+            UIText text = new UIText("Are you sure you want to evolve" + digimon.name + "to " + name);
+            popUpPanel.Append(text);
+            UIButton<string> confirmButton = new UIButton<string>("Confirm");
+            confirmButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+            {
+                evoSystem.TriggerEvolution(digimon, name);
+                RemoveChild(popUpPanel);
+            };
+            UIButton<string> cancelButton = new UIButton<string>("Cancel");
+            cancelButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+            {
+                RemoveChild(popUpPanel);
+            };
+            Vector2 textSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text.Text);
+            Vector2 confirmSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(confirmButton.Text);
+            Vector2 cancelSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(cancelButton.Text);
+            confirmButton.Top.Set(textSize.Y, 0f);
+            confirmButton.Width.Set(0f, 0.5f);
+            confirmButton.Height.Set(confirmSize.Y, 0f);
+            cancelButton.Top.Set(confirmButton.Top.Pixels, 0f);
+            cancelButton.Left.Set(0f, 0.5f);
+            cancelButton.Width.Set(0f, 0.5f);
+            cancelButton.Height.Set(confirmSize.Y, 0f);
+            popUpPanel.Append(confirmButton);
+            popUpPanel.Append(cancelButton);
+            popUpPanel.Width.Set(Math.Max(cancelButton.Width.Pixels + confirmButton.Width.Pixels, textSize.X), 0f);
+            popUpPanel.Height.Set(confirmSize.Y * 2f + textSize.Y, 0f);
+            Append(popUpPanel);
         }
 
         private void UpdateTextBox()

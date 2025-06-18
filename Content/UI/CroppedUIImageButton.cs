@@ -53,7 +53,6 @@ namespace DigiBlock.Content.UI
                 Vector2 pos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
                 Utils.DrawBorderString(Main.spriteBatch, textConditions, pos, Color.White);
             }
-            // Console.WriteLine(size + "" + dimensions.Width + "," + dimensions.Height);
             spriteBatch.Draw(
                 myTexture, // Stored Texture2D from constructor
                 drawPosition,

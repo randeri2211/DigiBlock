@@ -47,9 +47,6 @@ namespace DigiBlock.Content.Items.Digimon
         {
             if (digimon != null)
             {
-                Mod mod = ModContent.GetInstance<DigiBlock>();
-                Player player = Main.LocalPlayer;
-                // mod.Logger.Info(digimon.name + "," + digimon.Name);
                 tooltips.Add(new TooltipLine(Mod, "DigimonName", "Name: " + digimon.name));
                 tooltips.Add(new TooltipLine(Mod, "DigimonLevel", "Level: " + digimon.level));
                 tooltips.Add(new TooltipLine(Mod, "DigimonHP", "HP: " + digimon.NPC.life + "/" + digimon.NPC.lifeMax));

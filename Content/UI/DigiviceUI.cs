@@ -20,6 +20,7 @@ namespace DigiBlock.Content.UI
         private float defaultPanelWidth = 100f;
         private float defaultPanelHeight = 100f;
         private List<UIButton<string>> buttonList = new List<UIButton<string>>();
+        private float buttonHeight = 0;
         UIButton<string> evoButton;
         private UIDiskSlot diskSlot;
         UIText dataUI;
@@ -46,10 +47,6 @@ namespace DigiBlock.Content.UI
             {
                 panel.RemoveChild(dataUI);
             }
-            foreach (UIButton<string> button in buttonList)
-            {
-                panel.RemoveChild(button);
-            }
             if (!cardSlot.digivice.card.IsAir && cardSlot.digivice.card.ModItem is DigimonCard digimonCard)
             {
                 // Has DigimonCard
@@ -65,38 +62,22 @@ namespace DigiBlock.Content.UI
                 float padding = panel.PaddingLeft + panel.PaddingRight;
 
                 // Special ability buttons
-                float buttonHeight = 0;
-                for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
+                if (buttonList.Count == 0)
                 {
-                    buttonHeight = initSpecialAbilityButton(digimonCard, i, buttonHeight, textSize.Y);
+                    buttonHeight = 0;
+                    for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
+                    {
+                        buttonHeight = initSpecialAbilityButton(digimonCard, i, buttonHeight, textSize.Y);
+                    }
                 }
 
                 // Evolution Graph button
                 if (evoButton == null)
                 {
-                    evoButton = new UIButton<string>("Digivolutions");
-                    Vector2 evoTextSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(evoButton.Text);
-                    evoButton.Width.Set(evoTextSize.X, 0f);
-                    evoButton.Height.Set(evoTextSize.Y, 0f);
-                    evoButton.Left.Set(-evoTextSize.X, 1.0f);
-                    evoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
-                    {
-                        Console.WriteLine("clicked");
-
-                        if (EvolutionGraphUIInterface.CurrentState != null)
-                        {
-                            EvolutionGraphUIInterface.SetState(null);
-                        }
-                        EvolutionGraphUI evoGraphUI = new EvolutionGraphUI();
-                        evoGraphUI.digivice = cardSlot.digivice;
-                        EvolutionGraphUIInterface.SetState(evoGraphUI);
-                        ModContent.GetInstance<EvolutionGraphUISystem>().setVisible(true);
-                        evoGraphUI.SearchGraph(digimonCard.digimon.name);
-                    };
-                    panel.Append(evoButton);
+                    initEvoButton(digimonCard);
                 }
-                
-                panel.Width.Set(Math.Max(textSize.X + padding, defaultPanelWidth), 0f);
+
+                panel.Width.Set(Math.Max(textSize.X, 2 * evoButton.Width.Pixels + diskSlot.Width.Pixels) + padding, 0f);
                 panel.Height.Set(cardSlot.Top.Pixels + cardSlot.GetInnerDimensions().Height + textSize.Y + buttonHeight, 0f);
                 dataUI.Recalculate();
                 panel.Recalculate();
@@ -119,6 +100,12 @@ namespace DigiBlock.Content.UI
                     panel.RemoveChild(evoButton);
                     evoButton = null;
                 }
+                buttonHeight = 0;
+                foreach (var button in buttonList)
+                {
+                    panel.RemoveChild(button);
+                    buttonList = new List<UIButton<string>>();
+                }
                 
             }
         }
@@ -130,7 +117,9 @@ namespace DigiBlock.Content.UI
             cardSlot.Left.Set(0f, 0f);
             cardSlot.Top.Set(0f, 0f);
             panel.Append(cardSlot);
-
+            evoButton = null;
+            buttonList = new List<UIButton<string>>();
+            buttonHeight = 0;
 
             initDiskSlot();
         }
@@ -170,11 +159,9 @@ namespace DigiBlock.Content.UI
         {
             DigiAbility ability = digimonCard.digimon.specialAbilities[i];
             UIButton<string> button = new UIButton<string>(ability.name);
-            // button.TooltipText = true;
+            button.TooltipText = true;
             button.HoverText = ability.tooltip;
-            button.AltHoverText = ability.tooltip;
             button.Top.Set(buttonHeight + textHeight + dataUI.Top.Pixels - panel.PaddingBottom - panel.PaddingTop, 0f);
-            // button.Left.Set(panel.PaddingLeft, 0f);
             Vector2 bDim = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(button.HoverText);
             button.Width.Set(bDim.X, 0f);
             button.Height.Set(bDim.Y, 0f);
@@ -200,6 +187,31 @@ namespace DigiBlock.Content.UI
             panel.Append(button);
             button.Recalculate();
             return buttonHeight;
+        }
+
+        public void initEvoButton(DigimonCard digimonCard)
+        {
+            evoButton = new UIButton<string>("Digivolutions");
+            Vector2 evoTextSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(evoButton.Text);
+            evoButton.TooltipText = true;
+            evoButton.HoverText = "Digivolutions";
+            evoButton.Width.Set(evoTextSize.X, 0f);
+            evoButton.Height.Set(evoTextSize.Y, 0f);
+            evoButton.Left.Set(-evoTextSize.X, 1.0f);
+            evoButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
+            {
+
+                if (EvolutionGraphUIInterface.CurrentState != null)
+                {
+                    EvolutionGraphUIInterface.SetState(null);
+                }
+                EvolutionGraphUI evoGraphUI = new EvolutionGraphUI();
+                evoGraphUI.digivice = cardSlot.digivice;
+                EvolutionGraphUIInterface.SetState(evoGraphUI);
+                ModContent.GetInstance<EvolutionGraphUISystem>().setVisible(true);
+                evoGraphUI.SearchGraph(digimonCard.digimon.name);
+            };
+            panel.Append(evoButton);
         }
 
         public Item GetDigiviceItem()
