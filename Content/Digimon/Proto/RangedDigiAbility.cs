@@ -30,7 +30,7 @@ namespace DigiBlock.Content.Digimon.Ability
                     projectileType,
                     damage,
                     1f,
-                    255
+                    Main.myPlayer
                 );
 
                 if (Main.projectile.IndexInRange(projID))
