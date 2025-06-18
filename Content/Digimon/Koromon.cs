@@ -1,6 +1,8 @@
 using Terraria.ID;
 using Terraria;
-
+using DigiBlock.Content.Digimon.Ability;
+using Terraria.ModLoader;
+using DigiBlock.Content.Projectiles;
 
 namespace DigiBlock.Content.Digimon
 {
@@ -19,6 +21,8 @@ namespace DigiBlock.Content.Digimon
         {
             evoStage = Evolutions.InTraining;
             attribute = Attributes.None;
+            BubbleBlow ability2 = new BubbleBlow(this);
+            specialAbilities.Add(ability2);
             basePhysicalDamage = 10;
             baseSpecialDamage = 5;
             baseAgility = 10;

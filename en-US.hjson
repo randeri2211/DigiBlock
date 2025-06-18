@@ -111,6 +111,7 @@ Mods: {
 			DigiFireballProjectile.DisplayName: Digi Fireball Projectile
 			FireballProjectile.DisplayName: Fireball Projectile
 			ChestMissile.DisplayName: Chest Missile
+			BubbleProjectile.DisplayName: Bubble Projectile
 		}
 	}
 }
