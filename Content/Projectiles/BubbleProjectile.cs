@@ -16,7 +16,11 @@ namespace DigiBlock.Content.Projectiles
             Projectile.width = 16;
             Projectile.height = 16;
             Projectile.penetrate = 1;
+            Projectile.aiStyle = 0;
             accelY = 0;
+            float velSize = Projectile.velocity.Length();
+            Projectile.velocity.X = velSize;
+            Projectile.velocity.Y = 0;
             base.SetDefaults();
         }
 
@@ -30,7 +34,7 @@ namespace DigiBlock.Content.Projectiles
             Projectile.velocity.X *= 0.98f;
             Projectile.velocity.Y += accelY;
             Projectile.velocity.Y = Math.Max(Projectile.velocity.Y, -5f);
-            accelY -= 0.05f;
+            accelY -= 0.001f;
         }
     }
 }
