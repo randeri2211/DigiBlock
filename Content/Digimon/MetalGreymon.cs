@@ -19,7 +19,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
-            evoStage = Evolutions.Champion;
+            evoStage = Evolutions.Ultimate;
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
             DigiAbility dash = new Dash(this);

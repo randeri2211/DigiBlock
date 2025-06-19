@@ -98,6 +98,7 @@ Mods: {
 			Greymon.DisplayName: Greymon
 			Koromon.DisplayName: Koromon
 			MetalGreymon.DisplayName: Metal Greymon
+			WarGreymon.DisplayName: War Greymon
 		}
 
 		DamageClasses.DigitalDamage.DisplayName: Digital Damage
@@ -112,6 +113,7 @@ Mods: {
 			FireballProjectile.DisplayName: Fireball Projectile
 			ChestMissile.DisplayName: Chest Missile
 			BubbleProjectile.DisplayName: Bubble Projectile
+			TerraForceProjectile.DisplayName: Terra Force Projectile
 		}
 	}
 }

@@ -18,7 +18,6 @@ namespace DigiBlock.Content.Projectiles
 
         public override bool? CanHitNPC(NPC target)
         {
-            Console.WriteLine("check");
             return target.friendly != digimon.NPC.friendly;
         }
 

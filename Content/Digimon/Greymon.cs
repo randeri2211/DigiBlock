@@ -21,10 +21,10 @@ namespace DigiBlock.Content.Digimon
             evoStage = Evolutions.Champion;
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
-            DigiAbility ability1 = new Dash(this);
+            Dash ability1 = new Dash(this);
             ability1.name = "Horn Impulse";
             specialAbilities.Add(ability1);
-            DigiAbility ability2 = new FireBall(this);
+            FireBall ability2 = new FireBall(this);
             ability2.name = "Bit Fire";
             specialAbilities.Add(ability2);
             if (basePhysicalDamage == 0)

@@ -19,18 +19,8 @@ namespace DigiBlock.Content.Digimon.Ability
 
         public override void Use(int damage)
         {
-            if (digimon.wildTarget != null && digimon.wildTarget.active)
-            {
-                digimon.NPC.damage = damage;
-                digimon.canMove = false;
-                digimon.useContactDamage = false;
-                Vector2 direction = digimon.wildTarget.Center - digimon.NPC.Center;
-                direction.Normalize();
-                dashVelocity = direction * digimon.agility * 0.2f; // Speed of dash
-                isDashing = true;
-                dashTimer = dashDuration;
-                digimon.immune = true;
-            }
+            Vector2 direction = digimon.wildTarget.Center - digimon.NPC.Center;
+            dash(direction, damage);
         }
 
         public override void Update()
@@ -48,6 +38,21 @@ namespace DigiBlock.Content.Digimon.Ability
                     digimon.immune = false;
                     isDashing = false;
                 }
+            }
+        }
+
+        public void dash(Vector2 direction, int damage)
+        {
+            if (digimon.wildTarget != null && digimon.wildTarget.active)
+            {
+                digimon.NPC.damage = damage;
+                digimon.canMove = false;
+                digimon.useContactDamage = false;
+                direction.Normalize();
+                dashVelocity = direction * digimon.agility * 0.2f; // Speed of dash
+                isDashing = true;
+                dashTimer = dashDuration;
+                digimon.immune = true;
             }
         }
     }
