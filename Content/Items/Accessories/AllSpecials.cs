@@ -16,8 +16,8 @@ namespace DigiBlock.Content.Items.Accessories
         public override void SetDefaults()
         {
             Item.accessory = true;
-            Item.width = 31;
-            Item.height = 31;
+            Item.width = 22;
+            Item.height = 32;
             Item.value = Item.sellPrice(silver: 50);
             Item.rare = ItemRarityID.Green;
         }
