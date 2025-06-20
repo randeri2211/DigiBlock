@@ -21,7 +21,7 @@ namespace DigiBlock.Content.Digimon
             evoStage = Evolutions.Mega;
             lootType = ModContent.GetInstance<Koromon>().Type;
             attribute = Attributes.Vaccine;
-            DigiAbility dash = new Dash(this);
+            Dash dash = new Dash(this);
             dash.name = "Body Blow";
             specialAbilities.Add(dash);
             TerraForce ability = new TerraForce(this);

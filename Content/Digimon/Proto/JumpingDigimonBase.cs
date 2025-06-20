@@ -39,15 +39,21 @@ namespace DigiBlock.Content.Digimon
                 if (NPC.friendly)
                 {
                     // Jump towards the player
-                    if (playerOwner != null && playerDistance > 30f)
+                    if (playerOwner != null && playerDistance > 50f)
                     {
-                        Console.WriteLine("playerdistance"+playerDistance);
                         float xDiff = playerOwner.Center.X - NPC.Center.X;
                         // Jump towards the target if grounded
                         if (NPC.velocity.Y == 0)
                         {
                             NPC.velocity.Y = -(float)Math.Sin(45) * moveSpeed;
                             NPC.velocity.X = Math.Sign(xDiff) * (float)Math.Cos(45) * moveSpeed;
+                        }
+                    }
+                    else if (playerOwner != null)
+                    {
+                        if (NPC.velocity.Y == 0)
+                        {
+                            NPC.velocity.X = 0;
                         }
                     }
                 }

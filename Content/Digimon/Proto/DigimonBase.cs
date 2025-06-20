@@ -256,10 +256,7 @@ namespace DigiBlock.Content.Digimon
             {
                 Move();
             }
-            else
-            {
-                NPC.velocity.X = 0;
-            }
+
         }
 
         public virtual void Move() { }

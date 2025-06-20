@@ -19,7 +19,7 @@ namespace DigiBlock.Content.Digimon.Ability
 
         public override void Use(int damage)
         {
-            Vector2 direction = digimon.wildTarget.Center - digimon.NPC.Center;
+            Vector2 direction = digimon.wildTarget.Bottom - digimon.NPC.Bottom;
             dash(direction, damage);
         }
 
@@ -49,7 +49,7 @@ namespace DigiBlock.Content.Digimon.Ability
                 digimon.canMove = false;
                 digimon.useContactDamage = false;
                 direction.Normalize();
-                dashVelocity = direction * digimon.agility * 0.2f; // Speed of dash
+                dashVelocity = direction * digimon.agility * 0.3f; // Speed of dash
                 isDashing = true;
                 dashTimer = dashDuration;
                 digimon.immune = true;

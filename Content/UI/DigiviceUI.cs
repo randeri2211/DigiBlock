@@ -166,7 +166,6 @@ namespace DigiBlock.Content.UI
             button.Width.Set(0f, 1f);
             button.Height.Set(bDim.Y, 0f);
             buttonHeight += bDim.Y;
-            Console.WriteLine("setting color");
             if (digimonCard.digimon.specialAbilityIndex == i)
             {
                 button.BackgroundColor = Color.CornflowerBlue * 0.8f;
@@ -182,20 +181,15 @@ namespace DigiBlock.Content.UI
             button.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) =>
             {
                 digimonCard.digimon.specialAbilityIndex = index;
-                foreach (UIButton<string> b in buttonList)
+                // Recreate the buttons
+                foreach (var b in buttonList)
                 {
-                    if (b == button)
-                    {
-                        Console.WriteLine("clicked");
-                        button.BackgroundColor = Color.CornflowerBlue * 0.8f;
-                        button.BorderColor = Color.LightBlue;
-                    }
-                    else
-                    {
-                        b.BackgroundColor = Color.DarkSlateGray * 0.6f;
-                        b.BorderColor = Color.Gray;
-                    }
-                    b.Recalculate();
+                    panel.RemoveChild(b);
+                }
+                buttonHeight = 0;
+                for (int i = 0; i < digimonCard.digimon.specialAbilities.Count; i++)
+                {
+                    buttonHeight = initSpecialAbilityButton(digimonCard, i, buttonHeight, textHeight);
                 }
             };
 
