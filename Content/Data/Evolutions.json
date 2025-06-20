@@ -28,5 +28,13 @@
                 "Level": 36
             }
         }
+    ],
+    "MetalGreymon": [
+        {
+            "Evolution": "WarGreymon",
+            "Conditions": {
+                "Level": 50
+            }
+        }
     ]
 }

@@ -6,7 +6,7 @@ namespace DigiBlock.Common
         public const int LevelUpBonus = 1;
         public const int HPLevelUpBonusMultiplier = 5;
         public const int StartingEXP = 100;
-        public const float LevelingEXPMultiplier = 1.1f;
+        public const float LevelingEXPMultiplier = 1.05f;
         public const float AgilityMoveSpeedMultiplier = 0.01f;
         public const float DigimonLevelExpKillMultiplier = 1.0f;
         public const float AttributeDamageMultiplier = 0.5f;

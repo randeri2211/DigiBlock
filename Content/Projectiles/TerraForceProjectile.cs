@@ -25,6 +25,7 @@ namespace DigiBlock.Content.Projectiles
             Projectile.penetrate = -1;
             Projectile.aiStyle = 0;
             Projectile.scale = 0f;
+            Projectile.alpha = 100;
             maxScale = 30f;
             animationTime = 120;
             step = maxScale / animationTime;
@@ -50,7 +51,6 @@ namespace DigiBlock.Content.Projectiles
                     Projectile.velocity.X = 0;
                     Projectile.velocity.Y = 0;
                 }
-                Console.WriteLine("center" + Projectile.Center);
                 Projectile.scale += step;
                 Projectile.position.Y -= texture2D.Height * step / 2;
                 // Projectile.position.X -= texture2D.Width * step / 2;
