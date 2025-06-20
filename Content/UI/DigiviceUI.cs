@@ -166,7 +166,7 @@ namespace DigiBlock.Content.UI
             button.Width.Set(0f, 1f);
             button.Height.Set(bDim.Y, 0f);
             buttonHeight += bDim.Y;
-            if (digimonCard.digimon.specialAbilityIndex == i)
+            if (digimonCard.digimon.specialAbilityIndex == i || (digimonCard.digimon.playerOwner != null && digimonCard.digimon.playerOwner.GetModPlayer<DigiBlockPlayer>().digimonAllSpecialAbilities))
             {
                 button.BackgroundColor = Color.CornflowerBlue * 0.8f;
                 button.BorderColor = Color.LightBlue;

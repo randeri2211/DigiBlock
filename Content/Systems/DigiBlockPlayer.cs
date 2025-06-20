@@ -18,12 +18,14 @@ namespace DigiBlock.Content.Systems
         public float digimonMaxHPPercent;
         public float digimonDefensePercent;
         public float digimonEXPPercent;
+        public bool digimonAllSpecialAbilities;
 
         public override void ResetEffects()
         {
             digimonMaxHPPercent = 1f;
             digimonDefensePercent = 1f;
             digimonEXPPercent = 1f;
+            digimonAllSpecialAbilities = false;
         }
 
 

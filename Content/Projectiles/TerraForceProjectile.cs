@@ -16,6 +16,7 @@ namespace DigiBlock.Content.Projectiles
         public int animationTime;
         public float step;
         int direction = 0;
+        float yOffset;
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -28,7 +29,7 @@ namespace DigiBlock.Content.Projectiles
             Projectile.alpha = 100;
             maxScale = 30f;
             animationTime = 120;
-            step = maxScale / animationTime;
+            step = maxScale / animationTime;            
         }
 
         public override bool PreAI()
@@ -44,16 +45,16 @@ namespace DigiBlock.Content.Projectiles
                 // start still
                 if (Projectile.velocity.X != 0)
                 {
-
-                    Projectile.position.Y -= texture2D.Height * maxScale / 2 + 20f;
+                    yOffset = texture2D.Height * maxScale / 2 + 20f;
+                    // Projectile.position.Y -= yOffset;
 
                     direction = (Projectile.velocity.X > 0) ? 1 : -1;
                     Projectile.velocity.X = 0;
                     Projectile.velocity.Y = 0;
                 }
                 Projectile.scale += step;
-                Projectile.position.Y -= texture2D.Height * step / 2;
-                // Projectile.position.X -= texture2D.Width * step / 2;
+                Projectile.position.Y = digimon.NPC.position.Y - yOffset - texture2D.Height * Projectile.scale / 2;
+                Projectile.position.X = digimon.NPC.position.X;
 
             }
             else

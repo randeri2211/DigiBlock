@@ -75,6 +75,11 @@ Mods: {
 				DisplayName: E X P Disk
 				Tooltip: ""
 			}
+
+			AllSpecials: {
+				DisplayName: All Specials
+				Tooltip: ""
+			}
 		}
 
 		NPCs: {

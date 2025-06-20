@@ -182,7 +182,7 @@ namespace DigiBlock.Content.Digimon
                 playerDistance = Vector2.Distance(playerLocation, NPC.Center);
                 if (playerDistance > maxDistance)
                 {
-                    NPC.Center = playerLocation;
+                    NPC.Bottom = playerOwner.Bottom;
                     wildTarget = null;
                 }
                 NPC.target = 255;
@@ -223,7 +223,13 @@ namespace DigiBlock.Content.Digimon
 
                     ContactDamage();
                 }
-                if (specialAbilities.Count > specialAbilityIndex)
+                if (playerOwner != null && playerOwner.GetModPlayer<DigiBlockPlayer>().digimonAllSpecialAbilities)
+                {
+                    foreach (DigiAbility specialAbility in specialAbilities)
+                    {
+                        specialAbility._Use();
+                    }
+                }else if (specialAbilities.Count > specialAbilityIndex)
                 {
                     specialAbilities[specialAbilityIndex]?._Use();
                 }

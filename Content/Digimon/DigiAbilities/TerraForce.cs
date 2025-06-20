@@ -19,6 +19,7 @@ namespace DigiBlock.Content.Digimon.Ability
         public override void Use(int damage)
         {
             digimon.canMove = false;
+            digimon.NPC.velocity = new Vector2(0, 0);
             timer = ModContent.GetInstance<TerraForceProjectile>().animationTime;
             base.Use(damage);
         }
