@@ -1,8 +1,8 @@
 using Terraria.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using System;
+using Terraria;
 
 namespace DigiBlock.Content.UI
 {
@@ -36,9 +36,13 @@ namespace DigiBlock.Content.UI
                 if (mouse.X - offset.X < 0)
                 {
                     Left.Set(0, 0f);
-                } else if (mouse.X - offset.X >= Parent.GetDimensions().Width - Width.Pixels) {
+                }
+                else if (mouse.X - offset.X >= Parent.GetDimensions().Width - Width.Pixels)
+                {
                     Left.Set(Parent.GetDimensions().Width - Width.Pixels, 0f);
-                } else {
+                }
+                else
+                {
                     Left.Set(mouse.X - offset.X, 0f);
                 }
 
@@ -56,6 +60,11 @@ namespace DigiBlock.Content.UI
                 }
 
                 Recalculate();
+            }
+            if (IsMouseHovering)
+            {
+                Main.LocalPlayer.mouseInterface = true;
+                Main.blockMouse = true;
             }
         }
 
