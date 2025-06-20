@@ -23,6 +23,7 @@ namespace DigiBlock.Content.Digimon
             ability.name = "Baby Flame";
             specialAbilities.Add(ability);
             lootType = ModContent.GetInstance<Koromon>().Type;
+            lootProbablity = 10;
             attribute = Attributes.Vaccine;
             basePhysicalDamage = 20;
             baseSpecialDamage = 20;
@@ -31,6 +32,16 @@ namespace DigiBlock.Content.Digimon
             NPC.height = 32;
             baseMaxHP = 50;
             base.SetDefaults();
+        }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            if (spawnInfo.Player.ZoneOverworldHeight && Main.dayTime && spawnInfo.Player.ZoneForest)
+            {
+                return 0.5f; // 10% spawn chance relative to other spawns
+            }
+
+            return 0f;
         }
     }
 }

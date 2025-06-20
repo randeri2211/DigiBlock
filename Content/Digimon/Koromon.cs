@@ -19,6 +19,8 @@ namespace DigiBlock.Content.Digimon
 
         public override void SetDefaults()
         {
+            lootType = ModContent.GetInstance<Koromon>().Type;
+            lootProbablity = 20;
             evoStage = Evolutions.InTraining;
             attribute = Attributes.None;
             BubbleBlow ability2 = new BubbleBlow(this);
@@ -31,6 +33,16 @@ namespace DigiBlock.Content.Digimon
             baseMaxHP = 25;
             AnimationType = NPCID.Guide;
             base.SetDefaults();
+        }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            if (spawnInfo.Player.ZoneOverworldHeight && Main.dayTime && spawnInfo.Player.ZoneForest)
+            {
+                return 2f; // 10% spawn chance relative to other spawns
+            }
+
+            return 0f;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace DigiBlock.Content.Digimon
     public abstract class DigimonBase : ModNPC
     {
         public int lootType;
+        public int lootProbablity;
         public string name;
         public Attributes attribute;
         public DigimonCard card;
@@ -142,7 +143,7 @@ namespace DigiBlock.Content.Digimon
 
         public override void OnKill()
         {
-            if (lootType > 0 && !NPC.friendly)
+            if (lootType > 0 && !NPC.friendly && rng.Next(lootProbablity) == 0)
             {
                 if (Main.netMode != NetmodeID.MultiplayerClient) // Only drop on server
                 {
